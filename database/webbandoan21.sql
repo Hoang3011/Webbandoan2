@@ -56,15 +56,17 @@ CREATE TABLE `donhang` (
   `ngaytao` timestamp NOT NULL DEFAULT current_timestamp(),
   `tongtien` int(255) NOT NULL,
   `trangthai` enum('Chưa xác nhận','Đã xác nhận','Đã giao thành công','Đã hủy đơn') DEFAULT 'Chưa xác nhận',
+  `tinh_thanhpho` varchar(255) NOT NULL,
+  `quan_huyen` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `donhang`
 --
 
-INSERT INTO `donhang` (`madh`, `makh`, `ngaytao`, `tongtien`, `trangthai`) VALUES
-(1, 2, '2025-03-21 00:00:00', 50, 'Đã hủy đơn', ),
-(2, 22, '2025-04-01 00:00:00', 200, 'Chưa xác nhận',);
+INSERT INTO `donhang` (`madh`, `makh`, `ngaytao`, `tongtien`, `trangthai`, `tinh_thanhpho`, `quan_huyen`) VALUES
+(1, 2, '2025-03-21 00:00:00', 50, 'Đã hủy đơn', 'Thành phố Hà Nội', 'Quận Ba Đình'),
+(2, 22, '2025-04-01 00:00:00', 200, 'Chưa xác nhận', 'Thành phố Hà Nội', 'Quận Cầu Giấy');
 
 -- --------------------------------------------------------
 
@@ -113,21 +115,24 @@ CREATE TABLE `khachhang` (
   `makh` int(11) NOT NULL,
   `tenkh` varchar(100) NOT NULL,
   `matkhau` varchar(20) NOT NULL,
+  `tinh_thanhpho` varchar(255) NOT NULL,
+  `quan_huyen` varchar(255) NOT NULL,
   `diachi` varchar(100) NOT NULL,
   `sodienthoai` varchar(20) NOT NULL,
   `trangthai` enum('Locked','Active') NOT NULL DEFAULT 'Active',
   `ngaytao` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+ALTER TABLE khachhang MODIFY COLUMN makh INT AUTO_INCREMENT PRIMARY KEY;
 
 --
 -- Đang đổ dữ liệu cho bảng `khachhang`
 --
 
-INSERT INTO `khachhang` (`makh`, `tenkh`, `matkhau`, `diachi`, `sodienthoai`, `trangthai`, `ngaytao`) VALUES
-(12, 'nhan', 'nhan1234', 'quan tan phu', '0775177636', 'Active', '0000-00-00'),
-(13, 'KK', '12345',  '12345', '12345', 'Active', '0000-00-00'),
-(14, 'kkkkkk', '090909',  '090909', '090909', 'Active', '0000-00-00'),
-(22, 'Đăng Khoa', '0987',  '123', '0987654321', 'Active', '0000-00-00');
+INSERT INTO `khachhang` (`makh`, `tenkh`, `matkhau`, `tinh_thanhpho`, `quan_huyen`, `diachi`, `sodienthoai`, `trangthai`, `ngaytao`) VALUES
+(12, 'nhan', 'nhan1234', '', '', 'quan tan phu', '0775177636', 'Active', '0000-00-00'),
+(13, 'KK', '12345', '', '', '12345', '12345', 'Active', '0000-00-00'),
+(14, 'kkkkkk', '090909', '', '', '090909', '090909', 'Active', '0000-00-00'),
+(22, 'Đăng Khoa', '0987', 'Thành phố Hà Nội', 'Quận Cầu Giấy', '123', '0987654321', 'Active', '0000-00-00');
 
 -- --------------------------------------------------------
 

@@ -132,36 +132,47 @@
         </div>
     </div>
 </form>
-      <?php 
-      include "connect.php";
-      if (isset($_POST['dangnhap'])) {
-          $phonenumber = $_POST['sdt'];
-          $password = $_POST['password'];
-  
-          // Sử dụng prepared statement để tránh SQL Injection
-          $sql = "SELECT * FROM khachhang WHERE sodienthoai = ? AND matkhau = ?";
-          $stmt = $conn->prepare($sql);
-          $stmt->bind_param("ss", $phonenumber, $password);
-          $stmt->execute();
-          $result = $stmt->get_result();
-  
-          if ($result->num_rows == 1) {
-              $row = $result->fetch_assoc(); // Lấy dữ liệu khách hàng
-              $_SESSION['mySession'] = $row['tenkh']; // Lưu tên khách hàng vào session
-              $_SESSION['makh'] = $row['makh'];
-  
-              // Chuyển hướng sau khi đăng nhập thành công
-              header("Location: login.php");
-              exit();
-          } else {
-              echo "Sai mật khẩu hoặc số điện thoại!";
-          }
-          
-          // Đóng statement và kết nối
-          $stmt->close();
-          $conn->close();
-      }
-  ?>
+<?php 
+include "connect.php";
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+if (isset($_POST['dangnhap'])) {
+    $phonenumber = $_POST['sdt'];
+    $password = $_POST['password'];
+
+    // Sử dụng prepared statement để tránh SQL Injection
+    $sql = "SELECT * FROM khachhang WHERE sodienthoai = ? AND matkhau = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ss", $phonenumber, $password);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows == 1) {
+        $row = $result->fetch_assoc(); // Lấy dữ liệu khách hàng
+
+        if ($row['trangthai'] === 'Active') {
+            $_SESSION['mySession'] = $row['tenkh'];
+            $_SESSION['makh'] = $row['makh'];
+
+            header("Location: login.php");
+            exit();
+        } else if ($row['trangthai'] === 'Locked') {
+            echo "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên.";
+        } else {
+            echo "Trạng thái tài khoản không hợp lệ.";
+        }
+    } else {
+        echo "Sai mật khẩu hoặc số điện thoại!";
+    }
+
+    $stmt->close();
+    $conn->close();
+}
+?>
+
             </div>
           </div>
         </div>

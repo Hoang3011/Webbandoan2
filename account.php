@@ -73,6 +73,7 @@
                 <div class="inner-register">Tài khoản</div>
                 <div class="nav-link dropdown-toggle">
                 <?php 
+                include_once "includes/headerlogin.php";
                 session_start();
                 ob_start();
                 include "connect.php";
@@ -315,7 +316,7 @@
               <?php
               include "connect.php";
               if (!isset($_SESSION['PhoneNumber'])) {
-                header('location:login.php');
+                header('location:account.php');
                 exit(); 
             }
               $phone = $_SESSION['PhoneNumber'];
