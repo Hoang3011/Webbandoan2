@@ -52,7 +52,7 @@ if (mysqli_num_rows($result) > 0) {
                     <div class="list-control">
                         <div class="list-tool">
                             <a href="adminchangeproduct.php?id=' . $row['ID'] . '" class="btn-edit"><i class="fa-light fa-pen-to-square"></i></a>
-                            <a class="btn-delete" href="deleteproduct.php?this_id=' . $row['ID'] . '"><i class="fa-regular fa-trash"></i></a>
+                            <button class="btn-delete" onclick="confirmDelete(' . $row['ID'] . ')"><i class="fa-regular fa-trash"></i></button>
                         </div>
                     </div>
                 </div>

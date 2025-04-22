@@ -48,24 +48,42 @@
             </div>
           </div>
           <div class="inner-menu">
-            <table>
-              <tr>
-                <th>Đơn hàng</th>
-                <th>Ngày</th>
-                <th>Địa chỉ</th>
-                <th>Giá trị đơn hàng</th>
-                <th>TT thanh toán</th>
-                <th>TT vận chuyển</th>
-              </tr>
-              <tr>
-                <td><a class="active" href="chitiet.php">DH1</a></td>
-                <td>20/11/2024</td>
-                <td>273 An Dương Vương, Phường 3, Quận 5, TP Hồ Chí Minh</td>
-                <td>100.000 ₫</td>
-                <td>Đã thu tiền</td>
-                <td>Đã chuyển</td>
-              </tr>
-            </table>
+            <table class="table table-bordered">
+  <tr>
+    <th>Đơn hàng</th>
+    <th>Ngày</th>
+    <th>Địa chỉ</th>
+    <th>Giá trị đơn hàng</th>
+    <th>PT thanh toán</th>
+    <th>Trạng thái</th>
+  </tr>
+  <?php
+  include "connect.php";
+
+  if (isset($_SESSION['makh'])) {
+      $makh = $_SESSION['makh'];
+      $sql = "SELECT madh, ngaytao, diachinhan, tongtien, PT ,trangthai FROM donhang WHERE makh = ?;";
+      $stmt = $conn->prepare($sql);
+      $stmt->bind_param("i", $makh);
+      $stmt->execute();
+      $result = $stmt->get_result();
+
+      while ($row = $result->fetch_assoc()) {
+          echo '<tr>
+                  <td><a class="active" href="chitiet.php?madh=' . $row['madh'] . '">DH' . $row['madh'] . '</a></td>
+                  <td>' . date("d-m-Y", strtotime($row['ngaytao'])) . '</td>
+                  <td>' . htmlspecialchars($row['diachinhan']) . '</td>
+                  <td>' . number_format($row['tongtien'], 0, ',', '.') . '.000₫</td>
+                  <td>' . htmlspecialchars($row['PT']) . '</td>
+                  <td>'.htmlspecialchars($row['trangthai']).'</td>
+                </tr>';
+      }
+  } else {
+      echo '<tr><td colspan="5">Bạn cần đăng nhập để xem đơn hàng.</td></tr>';
+  }
+  ?>
+</table>
+
           </div>
         </form>
       </div>

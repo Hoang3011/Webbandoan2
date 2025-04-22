@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th4 11, 2025 lúc 02:11 PM
+-- Thời gian đã tạo: Th4 19, 2025 lúc 12:08 PM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
 -- Phiên bản PHP: 8.0.30
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Cơ sở dữ liệu: `webbandoan21`
+-- Cơ sở dữ liệu: `webbandoan222`
 --
 
 -- --------------------------------------------------------
@@ -42,7 +42,10 @@ CREATE TABLE `chitietdonhang` (
 
 INSERT INTO `chitietdonhang` (`mactdh`, `madh`, `masp`, `soluong`, `giabanle`) VALUES
 (1, 1, 3, 1, 50),
-(2, 2, 2, 3, 20);
+(2, 2, 2, 3, 20),
+(3, 6, 1, 1, 50),
+(4, 7, 1, 1, 50),
+(5, 7, 2, 1, 20);
 
 -- --------------------------------------------------------
 
@@ -55,18 +58,23 @@ CREATE TABLE `donhang` (
   `makh` int(255) NOT NULL,
   `ngaytao` timestamp NOT NULL DEFAULT current_timestamp(),
   `tongtien` int(255) NOT NULL,
-  `trangthai` enum('Chưa xác nhận','Đã xác nhận','Đã giao thành công','Đã hủy đơn') DEFAULT 'Chưa xác nhận',
-  `tinh_thanhpho` varchar(255) NOT NULL,
-  `quan_huyen` varchar(255) NOT NULL
+  `ghichu` varchar(255) NOT NULL,
+  `diachi` varchar(255) NOT NULL,
+  `phuongthuc` enum('Tiền mặt','Chuyển khoản') NOT NULL,
+  `trangthai` enum('Chưa xác nhận','Đã xác nhận','Đã giao thành công','Đã hủy đơn') DEFAULT 'Chưa xác nhận'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `donhang`
 --
 
-INSERT INTO `donhang` (`madh`, `makh`, `ngaytao`, `tongtien`, `trangthai`, `tinh_thanhpho`, `quan_huyen`) VALUES
-(1, 2, '2025-03-21 00:00:00', 50, 'Đã hủy đơn', 'Thành phố Hà Nội', 'Quận Ba Đình'),
-(2, 22, '2025-04-01 00:00:00', 200, 'Chưa xác nhận', 'Thành phố Hà Nội', 'Quận Cầu Giấy');
+INSERT INTO `donhang` (`madh`, `makh`, `ngaytao`, `tongtien`, `ghichu`, `diachi`, `phuongthuc`, `trangthai`) VALUES
+(1, 2, '2025-03-21 00:00:00', 50, '', '', 'Tiền mặt', 'Đã hủy đơn'),
+(2, 22, '2025-04-01 00:00:00', 60, '', '', 'Tiền mặt', 'Đã giao thành công'),
+(4, 22, '2025-04-19 05:12:27', 100, '', '123 đường AB, Quận Bình Thạnh, Thành phố Hồ Chí Minh', 'Tiền mặt', 'Đã xác nhận'),
+(5, 22, '2025-04-19 06:05:51', 99, '', '321 CBA, Quận Bình Tân, Thành phố Hồ Chí Minh', 'Tiền mặt', 'Đã hủy đơn'),
+(6, 13, '2025-04-19 08:05:29', 50, '', '12345', 'Tiền mặt', 'Chưa xác nhận'),
+(7, 13, '2025-04-19 10:04:18', 70, '', '12345', 'Tiền mặt', 'Chưa xác nhận');
 
 -- --------------------------------------------------------
 
@@ -88,22 +96,16 @@ CREATE TABLE `giohang` (
 --
 
 INSERT INTO `giohang` (`magiohang`, `makh`, `masp`, `soluong`, `dongia`) VALUES
-(10, 12, 6, 1, 40),
-(11, 12, 6, 1, 40),
-(12, 12, 12, 1, 30),
-(13, 12, 2, 2, 20),
-(14, 12, 2, 1, 20),
-(15, 12, 2, 1, 20),
-(16, 12, 2, 1, 20),
-(17, 12, 2, 1, 20),
-(18, 12, 3, 1, 50),
-(19, 12, 3, 1, 50),
-(20, 12, 3, 1, 50),
-(21, 13, 1, 1, 50),
-(22, 13, 2, 1, 20),
-(23, 13, 1, 1, 50),
-(24, 13, 3, 1, 50),
-(25, 13, 1, 1, 50);
+(0, 12, 2, 1, 20),
+(0, 12, 2, 1, 20),
+(0, 12, 2, 1, 20),
+(0, 12, 2, 1, 20),
+(0, 12, 3, 7, 50),
+(0, 12, 3, 7, 50),
+(0, 12, 10, 1, 40),
+(0, 0, 3, 1, 50),
+(0, 12, 20, 1, 55),
+(0, 12, 12, 1, 30);
 
 -- --------------------------------------------------------
 
@@ -115,25 +117,22 @@ CREATE TABLE `khachhang` (
   `makh` int(11) NOT NULL,
   `tenkh` varchar(100) NOT NULL,
   `matkhau` varchar(20) NOT NULL,
-  `tinh_thanhpho` varchar(255) NOT NULL,
-  `quan_huyen` varchar(255) NOT NULL,
   `diachi` varchar(100) NOT NULL,
   `sodienthoai` varchar(20) NOT NULL,
   `trangthai` enum('Locked','Active') NOT NULL DEFAULT 'Active',
   `ngaytao` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-ALTER TABLE khachhang MODIFY COLUMN makh INT AUTO_INCREMENT PRIMARY KEY;
 
 --
 -- Đang đổ dữ liệu cho bảng `khachhang`
 --
 
-INSERT INTO `khachhang` (`makh`, `tenkh`, `matkhau`, `tinh_thanhpho`, `quan_huyen`, `diachi`, `sodienthoai`, `trangthai`, `ngaytao`) VALUES
-(12, 'nhan', 'nhan1234', '', '', 'quan tan phu', '0775177636', 'Active', '0000-00-00'),
-(13, 'KK', '12345', '', '', '12345', '12345', 'Active', '0000-00-00'),
-(14, 'kkkkkk', '090909', '', '', '090909', '090909', 'Active', '0000-00-00'),
-(22, 'Đăng Khoa', '0987', 'Thành phố Hà Nội', 'Quận Cầu Giấy', '123', '0987654321', 'Active', '0000-00-00');
-
+INSERT INTO `khachhang` (`makh`, `tenkh`, `matkhau`, `diachi`, `sodienthoai`, `trangthai`, `ngaytao`) VALUES
+(12, 'nhan', 'nhan1234', 'quan tan phu', '0775177636', 'Active', '2025-04-19'),
+(13, 'KK', '12345', '12345', '12345', 'Active', '2025-04-19'),
+(14, 'kkkkkk', '090909', '090909', '090909', 'Active', '2025-04-19'),
+(22, 'Đăng Khoa', '0987', '123', '0987654321', 'Active', '2025-04-19');
+ALTER TABLE khachhang MODIFY COLUMN makh INT AUTO_INCREMENT PRIMARY KEY;
 -- --------------------------------------------------------
 
 --
@@ -161,6 +160,26 @@ INSERT INTO `loaisp` (`maloai`, `tenloai`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Cấu trúc bảng cho bảng `nhanvien`
+--
+
+CREATE TABLE `nhanvien` (
+  `manv` int(255) NOT NULL,
+  `tennv` varchar(255) NOT NULL,
+  `sodienthoai` varchar(255) NOT NULL,
+  `mk` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `nhanvien`
+--
+
+INSERT INTO `nhanvien` (`manv`, `tennv`, `sodienthoai`, `mk`) VALUES
+(1, 'Khoa', '12345', '12345');
+
+-- --------------------------------------------------------
+
+--
 -- Cấu trúc bảng cho bảng `sanpham`
 --
 
@@ -179,9 +198,9 @@ CREATE TABLE `sanpham` (
 --
 
 INSERT INTO `sanpham` (`ID`, `Name`, `Image`, `Price`, `Describtion`, `Type`, `Visible`) VALUES
-(1, 'Phở bò', 'assets\\img\\products\\phobo.jpg', 50, 'Hương vị tinh túy của Việt Nam, với nước dùng đậm đà từ xương bò hầm kỹ, kết hợp cùng bánh phở mềm, thịt bò tái chín vừa tới và các loại rau thơm tạo nên một món ăn sáng hoàn hảo.', 'món mặn', 1),
-(2, 'Bánh mì', 'assets\\img\\products\\banhmi.webp', 20, 'Một trong những món ăn đường phố ngon nhất thế giới, với vỏ bánh giòn rụm, nhân đầy đặn từ pate, thịt nguội, trứng, kèm theo rau thơm và nước sốt đậm đà.', 'món mặn', 1),
-(3, 'Bún chả Hà Nội', 'assets\\img\\products\\buncha.jpg', 50, 'Thịt nướng thơm lừng, được ăn kèm với bún tươi, rau sống và nước mắm chua ngọt, tạo nên sự cân bằng hoàn hảo giữa vị ngọt, chua, mặn, cay.', 'món mặn', 1),
+(1, 'Phở Bò', 'assets\\img\\products\\phobo.jpg', 50, 'Hương vị tinh túy của Việt Nam, với nước dùng đậm đà từ xương bò hầm kỹ, kết hợp cùng bánh phở mềm, thịt bò tái chín vừa tới và các loại rau thơm tạo nên một món ăn sáng hoàn hảo.', 'món mặn', 1),
+(2, 'Bánh mì', 'assets\\img\\products\\banhmi.webp', 20, 'Một trong những món ăn đường phố ngon nhất thế giới, với vỏ bánh giòn rụm, nhân đầy đặn từ pate, thịt nguội, trứng, kèm theo rau thơm và nước sốt đậm đà.', 'món mặn', 0),
+(3, 'Bún chả Hà Nội', 'assets\\img\\products\\buncha.jpg', 50, 'Thịt nướng thơm lừng, được ăn kèm với bún tươi, rau sống và nước mắm chua ngọt, tạo nên sự cân bằng hoàn hảo giữa vị ngọt, chua, mặn, cay.', 'món mặn', 0),
 (4, 'Bánh xèo Miền Tây', 'assets\\img\\products\\banhxeo.jpg', 30, ' Lớp vỏ giòn rụm, nhân đầy đặn từ tôm, thịt và giá đỗ, ăn kèm rau sống và chấm nước mắm chua ngọt, tạo nên hương vị khó quên.', 'món mặn', 1),
 (5, 'Gỏi cuốn', 'assets\\img\\products\\goicuon.jpg', 30, 'Món ăn thanh mát, với tôm, thịt, bún và rau cuốn trong bánh tráng, chấm kèm nước chấm bơ đậu phộng béo bùi.', 'món mặn', 1),
 (6, 'Cao lầu', 'assets\\img\\products\\caolau.jpg', 40, 'Đặc sản Hội An với sợi mì dai, thịt xá xíu đậm đà, rau sống tươi ngon và nước dùng đặc biệt.', 'món mặn', 1),
@@ -246,9 +265,45 @@ INSERT INTO `sanpham` (`ID`, `Name`, `Image`, `Price`, `Describtion`, `Type`, `V
 (65, 'Sinh tố bơ', 'assets\\img\\products\\sinhtobo.jpg', 25, 'Sinh tố bơ có độ béo mịn đặc trưng, vị ngọt nhẹ và mùi thơm hấp dẫn. Đây là món sinh tố bổ dưỡng, tốt cho da và sức khỏe.', 'nước uống', 1),
 (66, 'Bún riêu chay ', 'assets\\img\\products\\bunrieuchay.jpg', 30, 'Nước dùng thanh ngọt từ cà chua, đậu hũ và nấm tạo nên vị chua nhẹ, thơm ngon. Món này vẫn giữ được hương vị đặc trưng của bún riêu truyền thống nhưng nhẹ nhàng hơn, thích hợp cho những ai muốn ăn thanh đạm.', 'món chay', 1),
 (67, 'Hủ tiếu chay', 'assets\\img\\products\\hutieuchay.jpg', 30, 'Nước dùng từ rau củ rất ngọt tự nhiên, kết hợp với nấm, tàu hũ ki và sợi hủ tiếu dai ngon. Món này không chỉ thơm ngon mà còn rất bổ dưỡng.', 'món chay', 1),
-(68, 'Cơm tấm chay ', 'assets\\img\\products\\comtamchay.png', 30, ' Món cơm tấm chay có đầy đủ các thành phần như chả chay, bì chay, nước mắm chay pha vừa miệng. Mặc dù không có thịt nhưng vẫn giữ được hương vị thơm ngon, hấp dẫn.\r\n\r\n', 'món chay', 1),
-(69, 'Lẩu nấm chay ', 'assets\\img\\products\\launamchay.jpg', 150, 'Lẩu nấm chay có nước dùng thanh nhẹ, kết hợp với nhiều loại nấm tươi ngon và rau xanh, tạo nên một bữa ăn đầy dinh dưỡng. Đây là lựa chọn tuyệt vời cho những ai thích món ăn lành mạnh.', 'món chay', 1),
-(70, 'Gỏi cuốn chay ', 'assets\\img\\products\\goicuonchay.jpg', 10, 'Gỏi cuốn chay gồm rau sống, bún, đậu hũ cuốn trong bánh tráng, chấm cùng nước tương đậm đà. Món ăn này thanh đạm nhưng vẫn rất ngon miệng.', 'món chay', 1);
+(68, 'Cơm tấm chay ', 'assets\\img\\products\\comtamchay.png', 30, ' Món cơm tấm chay có đầy đủ các thành phần như chả chay, bì chay, nước mắm chay pha vừa miệng. Mặc dù không có thịt nhưng vẫn giữ được hương vị thơm ngon, hấp dẫn.\r\n\r\n', 'món chay', 1);
+
+--
+-- Chỉ mục cho các bảng đã đổ
+--
+
+--
+-- Chỉ mục cho bảng `chitietdonhang`
+--
+ALTER TABLE `chitietdonhang`
+  ADD PRIMARY KEY (`mactdh`);
+
+--
+-- Chỉ mục cho bảng `donhang`
+--
+ALTER TABLE `donhang`
+  ADD PRIMARY KEY (`madh`);
+
+--
+-- Chỉ mục cho bảng `nhanvien`
+--
+ALTER TABLE `nhanvien`
+  ADD PRIMARY KEY (`manv`);
+
+--
+-- AUTO_INCREMENT cho các bảng đã đổ
+--
+
+--
+-- AUTO_INCREMENT cho bảng `chitietdonhang`
+--
+ALTER TABLE `chitietdonhang`
+  MODIFY `mactdh` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT cho bảng `donhang`
+--
+ALTER TABLE `donhang`
+  MODIFY `madh` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

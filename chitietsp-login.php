@@ -15,7 +15,6 @@
       integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
       crossorigin="anonymous"
     />
-
     <link
       rel="stylesheet"
       href="assets/font-awesome-pro-v6-6.2.0/css/all.min.css"
@@ -96,25 +95,12 @@
                     />
                     <span id="tang" onclick="tangsoluong()" class="inner-cong">+</span>
                   </div>
-                  <button type="submit" onclick="thongbao()" class="inner-nut" name="addProduct">
-                    Thêm vào giỏ hàng
+                  <button type="submit" onclick="thongbao()" class="inner-nut" name="addProduct" data-id="<?php $row['ID'];?>">
+                    Thêm vào giỏ hàng 
                   </button>
                 </div>
                 </form>
               </div>
-              <script>
-                function tangsoluong() {
-    let input = document.getElementById("tanggiam");
-    input.value = parseInt(input.value) + 1;
-}
-
-function giamsoluong() {
-    let input = document.getElementById("tanggiam");
-    if (parseInt(input.value) > 1) {
-        input.value = parseInt(input.value) - 1;
-    }
-}
-              </script>
               <div class="col-xl-12">
                 <div class="inner-thongtin">
                   <div class="inner-nut">
@@ -130,7 +116,7 @@ function giamsoluong() {
               </div>
             </div>
           </div>
-          <?php 
+          <?php
 include "connect.php";
 
 if (isset($_POST['addProduct']) && isset($_GET['id'])) {
@@ -178,8 +164,9 @@ if (isset($_POST['addProduct']) && isset($_GET['id'])) {
         $stmt4 = $conn->prepare($update_giohang);
         $stmt4->bind_param("iii", $soluong_moi, $makh, $masp);
         if ($stmt4->execute()) {
-          header("location: login.php");
-          exit();
+            // Chuyển hướng về trang chi tiết sản phẩm với cùng ID
+            header("Location: chitietsp-login.php?id=$masp");
+            exit();
         } else {
             echo "<script>alert('⚠️ Lỗi khi cập nhật số lượng!');</script>";
         }
@@ -189,8 +176,9 @@ if (isset($_POST['addProduct']) && isset($_GET['id'])) {
         $stmt5 = $conn->prepare($insert);
         $stmt5->bind_param("iiid", $makh, $masp, $soluong, $dongia);
         if ($stmt5->execute()) {
-          header("location: login.php");
-          exit();
+            // Chuyển hướng về trang chi tiết sản phẩm với cùng ID
+            header("Location: chitietsp-login.php?id=$masp");
+            exit();
         } else {
             echo "<script>alert('⚠️ Lỗi khi thêm vào giỏ hàng!');</script>";
         }
@@ -302,8 +290,6 @@ if ($conn->connect_error) {
 // Lấy 4 sản phẩm ngẫu nhiên
 $sql = "SELECT * FROM sanpham ORDER BY RAND() LIMIT 4";
 $result = $conn->query($sql);
-
-// Hiển thị sản phẩm
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
         echo '
@@ -325,16 +311,8 @@ if ($result->num_rows > 0) {
 } else {
     echo "Không có sản phẩm nào!";
 }
-
 $conn->close();
 ?>
-
-
-
-
-
-
-
         </div>
       </div>
     </div>
@@ -343,4 +321,24 @@ $conn->close();
 <?php
 include_once "includes/footer.php";
 ?>
+<script>
+   function tangsoluong() {
+    let input = document.getElementById("tanggiam");
+    input.value = parseInt(input.value) + 1;
+}
+function giamsoluong() {
+    let input = document.getElementById("tanggiam");
+    if (parseInt(input.value) > 1) {
+        input.value = parseInt(input.value) - 1;
+    }
+}
+$(document).ready(function(){
+  $('.inner-nut').click(function(){
+    var id = $(this).data('id');
+    $.post('capnhatgh.php',{ action: 'add' , id: id },function(response){
+      alert(response.message)
+    },'json');
+  });
+});
+</script>
 </html>

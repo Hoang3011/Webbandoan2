@@ -41,6 +41,27 @@
             <a href="adminstatistical.php"><i class="fa-light fa-chart-simple"></i> Thống kê</a>
           </li>
         </ul>
+
+                <ul class="sidebar-list">
+          <li class="sidebar-list-item user-logout">
+            <a href="login.php" class="sidebar-link">
+              <div class="sidebar-icon"><i class="fa-thin fa-circle-chevron-left"></i></div>
+              <div class="hidden-sidebar">Trang chủ</div>
+            </a>
+          </li>
+          <li class="sidebar-list-item user-logout">
+            <a href="#" class="sidebar-link">
+              <div class="sidebar-icon"><i class="fa-light fa-circle-user"></i></div>
+              <div class="hidden-sidebar" id="name-acc">Lữ Học Nhân</div>
+            </a>
+          </li>
+          <li class="sidebar-list-item user-logout">
+            <a href="index.php" class="sidebar-link" id="logout-acc">
+              <div class="sidebar-icon"><i class="fa-light fa-arrow-right-from-bracket"></i></div>
+              <div class="hidden-sidebar">Đăng xuất</div>
+            </a>
+          </li>
+        </ul>
       </nav>
 
     <div class="adminthongkechitiet">

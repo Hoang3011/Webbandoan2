@@ -67,44 +67,6 @@ function notLogin() {
   alert("Chưa đăng nhập tài khoản !");
 }
 
-function dangNhap(event) {
-  event.preventDefault(); // Ngăn chặn form submit mặc định
-
-  // Lấy giá trị từ form
-  const sdt = document.getElementById("sdt").value;
-  const mk = document.getElementById("mk").value;
-
-  // Tạo FormData để gửi dữ liệu
-  const formData = new FormData();
-  formData.append("sdt", sdt);
-  formData.append("password", mk);
-  formData.append("dangnhap", "true");
-
-  // Gửi yêu cầu AJAX
-  fetch(window.location.href, {
-    method: "POST",
-    body: formData,
-  })
-    .then((response) => response.text())
-    .then((data) => {
-      // Kiểm tra kết quả từ PHP
-      if (data.includes("đang nhap thanh cong")) {
-        // Đăng nhập thành công, chuyển hướng
-        window.location.href = "login.php";
-      } else if (
-        data.includes("sai mat khau") ||
-        data.includes("tai khoa khong ton tai")
-      ) {
-        // Hiển thị thông báo lỗi
-        alert("Tài khoản hoặc mật khẩu không chính xác!");
-      }
-    })
-    .catch((error) => {
-      console.error("Lỗi:", error);
-      alert("Có lỗi xảy ra khi đăng nhập!");
-    });
-}
-
 document.addEventListener("DOMContentLoaded", function () {
   // Gán sự kiện mở/tắt bộ lọc
   let toggleFilterBtn = document.getElementById("toggle-filter-btn");

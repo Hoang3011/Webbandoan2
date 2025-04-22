@@ -85,15 +85,16 @@
 
                 <div class="inner-add">
                   <div class="inner-sl">Số lượng:</div>
-                  <div class="inner-tanggiam">
-                    <span id="giam" class="inner-tru">-</span>
+                   <div class="inner-tanggiam">
+                    <span id="giam" onclick="giamsoluong()" class="inner-tru">-</span>
                     <input
                       id="tanggiam"
                       type="text"
                       value="1"
                       class="inner-so"
+                      name="soluong";
                     />
-                    <span id="tang" class="inner-cong">+</span>
+                    <span id="tang" onclick="tangsoluong()" class="inner-cong">+</span>
                   </div>
                   <button type="button" onclick="notLogin()" class="inner-nut">
                     Thêm vào giỏ hàng
@@ -259,5 +260,18 @@ $conn->close();
 <?php
 include_once "includes/footer.php";
 ?>
+<script>
+   function tangsoluong() {
+    let input = document.getElementById("tanggiam");
+    input.value = parseInt(input.value) + 1;
+}
+function giamsoluong() {
+    let input = document.getElementById("tanggiam");
+    if (parseInt(input.value) > 1) {
+        input.value = parseInt(input.value) - 1;
+    }
+}
+
+</script>
 
 </html>

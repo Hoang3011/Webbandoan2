@@ -50,14 +50,42 @@
               <div class="hidden-sidebar">Trang chủ</div>
             </a>
           </li>
+         <!-- Assuming this is part of a larger admin.php file -->
           <li class="sidebar-list-item user-logout">
             <a href="#" class="sidebar-link">
               <div class="sidebar-icon"><i class="fa-light fa-circle-user"></i></div>
               <div class="hidden-sidebar" id="name-acc">Lữ Học Nhân</div>
             </a>
           </li>
+
+          <script>
+            // Function to get cookie by name
+            function getCookie(name) {
+              const nameEQ = name + "=";
+              const ca = document.cookie.split(';');
+              for (let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) == ' ') {
+                  c = c.substring(1, c.length);
+                }
+                if (c.indexOf(nameEQ) == 0) {
+                  return c.substring(nameEQ.length, c.length);
+                }
+              }
+              return null;
+            }
+
+            // Update username display from cookie
+            window.onload = function() {
+              const username = getCookie("username");
+              const nameElement = document.getElementById("name-acc");
+              if (username && nameElement) {
+                nameElement.textContent = username;
+              }
+            };
+          </script>
           <li class="sidebar-list-item user-logout">
-            <a href="index.php" class="sidebar-link" id="logout-acc">
+            <a href="adminlogin.php" class="sidebar-link" id="logout-acc">
               <div class="sidebar-icon"><i class="fa-light fa-arrow-right-from-bracket"></i></div>
               <div class="hidden-sidebar">Đăng xuất</div>
             </a>

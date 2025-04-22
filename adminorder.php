@@ -18,25 +18,23 @@
   </head>
   <body>
     <?php
-include_once "./includes/headeradmin.php";
-
+    include_once "./includes/headeradmin.php";
     ?>
 
-    <!-- adminorder -->
+    <!-- Adminorder -->
     <div class="admin-order">
       <div class="admin-control">
         <div class="admin-control-left">
           <select name="tinh-trang-user" id="tinh-trang-user">
-            <option value="0">Tất cả</option>
-            <option value="1">Chưa xử lý</option>
-            <option value="2">Đã xác nhận</option>
-            <option value="3">Đã giao thành công</option>
-            <option value="4">Đã huỷ</option>
+            <option value="">Tất cả</option>
+            <option value="Chưa xác nhận">Chưa xác nhận</option>
+            <option value="Đã xác nhận">Đã xác nhận</option>
+            <option value="Đã giao thành công">Đã giao thành công</option>
+            <option value="Đã hủy đơn">Đã hủy đơn</option>
           </select>
-
         </div>
         <div class="admin-control-center">
-          <form action="">
+          <form id="search-form">
             <span class="search-btn"><i class="fa-light fa-magnifying-glass"></i></span>
             <input
               id="form-search-product"
@@ -47,14 +45,13 @@ include_once "./includes/headeradmin.php";
           </form>
         </div>
         <div class="admin-control-right">
-          <form action="" class="fillter-date">
+          <form class="fillter-date">
             <div>
               <label for="time-start">Từ</label>
               <input
                 type="date"
                 class="form-control-date"
                 id="time-start-user"
-                onchange="showUser()"
               />
             </div>
             <div>
@@ -63,16 +60,30 @@ include_once "./includes/headeradmin.php";
                 type="date"
                 class="form-control-date"
                 id="time-end-user"
-                onchange="showUser()"
               />
             </div>
+            <div>
+              <label for="province">Tỉnh/Thành</label>
+              <select id="province" class="form-control">
+                <option value="">Chọn Tỉnh/Thành</option>
+              </select>
+            </div>
+            <div>
+              <label for="district">Quận/Huyện</label>
+              <select id="district" class="form-control" disabled>
+                <option value="">Chọn Quận/Huyện</option>
+              </select>
+            </div>
+            <button type="button" id="search-btn" class="btn btn-primary">Tìm kiếm</button>
           </form>
           <a href="adminorder.php" class="reset-order"><i class="fa-light fa-arrow-rotate-right"></i></a>
         </div>
       </div>
+      <!-- End Adminorder -->
 
+      <!-- Show Admin Orders -->
       <div class="table">
-        <table width="100%">
+        <table width="100%" id="order-table">
           <thead>
             <tr>
               <td>Mã đơn</td>
@@ -84,77 +95,124 @@ include_once "./includes/headeradmin.php";
             </tr>
           </thead>
           <tbody id="showOrder">
-            <tr>
-              <td>DH1</td>
-              <td>Thanh</td>
-              <td>20/11/2024</td>
-              <td>100.000 ₫</td>
-              <td><span id="order-status-1" class="status-complete">Đã giao thành công</span></td>
-              <td class="control">
-                <a href="adminchitiet.php" class="btn-detail">
-                  <i class="fa-regular fa-eye"></i> Chi tiết
-                </a>
-              </td>
-            </tr>
-            <tr>
-              <td>DH2</td>
-              <td>Nguyen Dai</td>
-              <td>12/11/2024</td>
-              <td>75.000 ₫</td>
-              <td><span class="status-complete">Đã giao thành công</span></td>
-              <td class="control">
-                <a href="adminchitiet.php" class="btn-detail">
-                  <i class="fa-regular fa-eye"></i> Chi tiết
-                </a>
-              </td>
-            </tr>
-            <tr>
-              <td>DH3</td>
-              <td>Nguyen Hoang</td>
-              <td>28/11/2024</td>
-              <td>80.000 ₫</td>
-              <td><span class="status-middle-complete">Đã xác nhận</span></td>
-              <td class="control">
-                <a href="adminchitiet.php" class="btn-detail">
-                  <i class="fa-regular fa-eye"></i> Chi tiết
-                </a>
-              </td>
-            </tr>
-            <tr>
-              <td>DH4</td>
-              <td>Dang Khoa</td>
-              <td>21/11/2024</td>
-              <td>540.000 ₫</td>
-              <td><span class="status-no-complete">Chưa xử lý</span></td>
-              <td class="control">
-                <a href="adminchitiet.php" class="btn-detail">
-                  <i class="fa-regular fa-eye"></i> Chi tiết
-                </a>
-              </td>
-            </tr>
-            <tr>
-              <td>DH5</td>
-              <td>Lu Nhan</td>
-              <td>22/11/2024</td>
-              <td>75.000 ₫</td>
-              <td><span class="status-no-complete">Chưa xử lý</span></td>
-              <td class="control">
-                <a href="adminchitiet.php" class="btn-detail">
-                  <i class="fa-regular fa-eye"></i> Chi tiết
-                </a>
-              </td>
-            </tr>
+            <?php
+            include_once 'connect.php';
+            $sql = "SELECT dh.madh, dh.makh, dh.ngaytao, dh.tongtien, dh.trangthai, kh.tenkh 
+                    FROM donhang dh 
+                    JOIN khachhang kh ON dh.makh = kh.makh";
+            $result = mysqli_query($conn, $sql);
+            if (mysqli_num_rows($result) > 0) {
+              while ($row = mysqli_fetch_assoc($result)) {
+                $madh = "DH" . $row['madh'];
+                $ngaydat = date('d/m/Y', strtotime($row['ngaytao']));
+                $tongtien = number_format($row['tongtien']) . ".000 ₫";
+                $status_class = '';
+                switch ($row['trangthai']) {
+                  case 'Chưa xác nhận':
+                    $status_class = 'status-no-complete';
+                    break;
+                  case 'Đã xác nhận':
+                    $status_class = 'status-middle-complete';
+                    break;
+                  case 'Đã giao thành công':
+                    $status_class = 'status-complete';
+                    break;
+                  case 'Đã hủy đơn':
+                    $status_class = 'status-destroy-complete';
+                    break;
+                }
+            ?>
+              <tr>
+                <td><?php echo $madh; ?></td>
+                <td><?php echo htmlspecialchars($row['tenkh']); ?></td>
+                <td><?php echo $ngaydat; ?></td>
+                <td><?php echo $tongtien; ?></td>
+                <td><span class="<?php echo $status_class; ?>"><?php echo $row['trangthai']; ?></span></td>
+                <td class="control">
+                  <a href="adminchitiet.php?madh=<?php echo $row['madh']; ?>" class="btn-detail">
+                    <i class="fa-regular fa-eye"></i> Chi tiết
+                  </a>
+                </td>
+              </tr>
+            <?php
+              }
+            } else {
+              echo "<tr><td colspan='6'>Không có đơn hàng nào</td></tr>";
+            }
+            mysqli_close($conn);
+            ?>
           </tbody>
         </table>
       </div>
-
     </div>
-    <!-- End adminorder -->
+    <!-- End Admin Orders-->
 
-    <script src="admin/js/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="admin/js/bootstrap.min.js"></script>
     <script src="admin/js/main.js"></script>
     <script src="admin/js/popper.js"></script>
     <script src="assets/js/admin.js"></script>
+    <script>
+      $(document).ready(function() {
+        // Fetch provinces from API
+        $.getJSON('https://provinces.open-api.vn/api/p/', function(data) {
+          $.each(data, function(index, province) {
+            $('#province').append(`<option value="${province.name}">${province.name}</option>`);
+          });
+        });
+
+        // Fetch districts when a province is selected
+        $('#province').change(function() {
+          const provinceName = $(this).val();
+          $('#district').prop('disabled', true).html('<option value="">Chọn Quận/Huyện</option>');
+          if (provinceName) {
+            $.getJSON(`https://provinces.open-api.vn/api/p/search/?q=${provinceName}`, function(provinceData) {
+              if (provinceData.length > 0) {
+                const provinceCode = provinceData[0].code;
+                $.getJSON(`https://provinces.open-api.vn/api/p/${provinceCode}?depth=2`, function(data) {
+                  $.each(data.districts, function(index, district) {
+                    $('#district').append(`<option value="${district.name}">${district.name}</option>`);
+                  });
+                  $('#district').prop('disabled', false);
+                });
+              }
+            });
+          }
+        });
+
+        // Search button click handler
+        $('#search-btn').click(function() {
+          const status = $('#tinh-trang-user').val();
+          let orderId = $('#form-search-product').val().replace('DH', '');
+          orderId = orderId ? parseInt(orderId) : '';
+          const startDate = $('#time-start-user').val();
+          const endDate = $('#time-end-user').val();
+          const province = $('#province').val();
+          const district = $('#district').val();
+
+          $.ajax({
+            url: 'search_orders.php',
+            type: 'POST',
+            data: {
+              status: status,
+              orderId: orderId,
+              startDate: startDate,
+              endDate: endDate,
+              province: province,
+              district: district
+            },
+            success: function(response) {
+              $('#order-table').fadeOut(300, function() {
+                $('#showOrder').html(response);
+                $('#order-table').fadeIn(300);
+              });
+            },
+            error: function() {
+              alert('Đã có lỗi xảy ra. Vui lòng thử lại.');
+            }
+          });
+        });
+      });
+    </script>
   </body>
 </html>
