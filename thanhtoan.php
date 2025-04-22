@@ -21,109 +21,94 @@
 
     <!-- Account -->
     <div class="ThongTin">
-      <div class="container">
-        <div class="row">
-          <form action="thanhtoan.php" method="post">
-          <div class="col-xl-7 col-lg-7 col-md-6 col-sm-12">
-            
-            <div class="inner-item">
-              <div class="inner-tt">Giỏ hàng</div>
-              <?php 
-            include "connect.php";
-            if(isset($_SESSION['makh'])){
-              $makh = $_SESSION['makh'];
-              $sql = "SELECT g.soluong,sp.Name,sp.Image,sp.Price FROM giohang g JOIN sanpham sp ON g.masp = sp.ID WHERE g.makh = ?;";
-              $stmt = $conn->prepare($sql);
-              $stmt->bind_param("i",$makh);
-              $stmt->execute();
-              $result = $stmt->get_result();
-              while ($row = $result->fetch_assoc()) {
-                $ten = htmlspecialchars($row['Name']);
-                $soluong = $row['soluong'];
-                $gia = number_format($row['Price'], 0, ',', '.') . ".000₫";
-                $hinhanh = htmlspecialchars($row['Image']);
-                echo '
-                <div class="inner-gth">
-                    <div class="inner-img">
-                        <img src="'. $hinhanh .'" />
-                    </div>
-                    <div class="inner-mota">
-                        <div class="inner-ten">' . $ten . '</div>
-                        <div class="inner-sl">Số lượng: ' . $soluong . '</div>
-                        <div class="inner-gia">' . $gia . '</div>
-                    </div>
-                </div>';
-            }}
-            ?>
-            </div>
+        <div class="container">
             <div class="row">
-              <div class="col-12">
-                <div class="inner-item">
-                    <div class="inner-tt">Thông tin khách hàng</div>
-                    <div class="row">
-                      <?php 
-                      include "connect.php";
-                      if(!isset($_SESSION['makh'])){
+                <form action="thanhtoan.php" method="post">
+                    <div class="col-xl-7 col-lg-7 col-md-6 col-sm-12">
+                        <!-- Giỏ hàng -->
+                        <div class="inner-item">
+                            <div class="inner-tt">Giỏ hàng</div>
+                            <?php
+                            include "connect.php";
+                            if (isset($_SESSION['makh'])) {
+                                $makh = $_SESSION['makh'];
+                                $sql = "SELECT g.soluong, sp.Name, sp.Image, sp.Price FROM giohang g JOIN sanpham sp ON g.masp = sp.ID WHERE g.makh = ?";
+                                $stmt = $conn->prepare($sql);
+                                $stmt->bind_param("i", $makh);
+                                $stmt->execute();
+                                $result = $stmt->get_result();
+                                while ($row = $result->fetch_assoc()) {
+                                    $ten = htmlspecialchars($row['Name']);
+                                    $soluong = $row['soluong'];
+                                    $gia = number_format($row['Price'], 0, ',', '.') . ".000₫";
+                                    $hinhanh = htmlspecialchars($row['Image']);
+                                    echo '
+                                    <div class="inner-gth">
+                                        <div class="inner-img">
+                                            <img src="' . $hinhanh . '" alt="' . $ten . '" />
+                                        </div>
+                                        <div class="inner-mota">
+                                            <div class="inner-ten">' . $ten . '</div>
+                                            <div class="inner-sl">Số lượng: ' . $soluong . '</div>
+                                            <div class="inner-gia">' . $gia . '</div>
+                                        </div>
+                                    </div>';
+                                }
+                                $stmt->close();
+                            } else {
+                                echo '<p class="text-danger">Vui lòng đăng nhập để xem giỏ hàng.</p>';
+                            }
+                            ?>
+                        </div>
 
-                      }
-                        $makh = $_SESSION['makh'];
-                        $sql = "SELECT kh.tenkh,kh.diachi,kh.sodienthoai FROM khachhang kh WHERE kh.makh = ? ";
-                        $stmt = $conn->prepare($sql);
-                        $stmt->bind_param("i",$makh);
-                        $stmt->execute();
-                        $result = $stmt->get_result();
-                      ?>
-                      <?php while($row = $result->fetch_assoc()): ?>
-                      <div class="col-xl-12">
-                        <div class="form-group">
-                          <label for="name">Họ và tên:</label>
-                          <input
-                            type="text"
-                            id="name"
-                            class="form-control"
-                            value="<?= htmlspecialchars($row['tenkh']); ?>"
-                          />
+                        <!-- Thông tin khách hàng -->
+                        <div class="inner-item">
+                            <div class="inner-tt">Thông tin khách hàng</div>
+                            <div class="row">
+                                <?php
+                                if (isset($_SESSION['makh'])) {
+                                    $makh = $_SESSION['makh'];
+                                    $sql = "SELECT tenkh, diachi, sodienthoai FROM khachhang WHERE makh = ?";
+                                    $stmt = $conn->prepare($sql);
+                                    $stmt->bind_param("i", $makh);
+                                    $stmt->execute();
+                                    $result = $stmt->get_result();
+                                    if ($row = $result->fetch_assoc()) {
+                                        echo '
+                                        <div class="col-xl-12">
+                                            <div class="form-group">
+                                                <label for="name">Họ và tên:</label>
+                                                <input type="text" id="name" class="form-control" value="' . htmlspecialchars($row['tenkh']) . '" readonly />
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-12">
+                                            <div class="form-group">
+                                                <label for="sdt">Số điện thoại:</label>
+                                                <input type="text" id="sdt" class="form-control" value="' . htmlspecialchars($row['sodienthoai']) . '" readonly />
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-12">
+                                            <div class="form-group">
+                                                <label for="diachi">Địa chỉ giao hàng:</label>
+                                                <input type="text" id="diachi" name="diachi" class="form-control" value="' . htmlspecialchars($row['diachi']) . '" required />
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-12">
+                                            <div class="form-group">
+                                                <label for="ghichu">Ghi chú đơn hàng:</label>
+                                                <textarea id="ghichu" class="form-control" placeholder="Ghi chú" name="ghichu"></textarea>
+                                            </div>
+                                        </div>';
+                                    } else {
+                                        echo '<p class="text-danger">Không tìm thấy thông tin khách hàng.</p>';
+                                    }
+                                    $stmt->close();
+                                } else {
+                                    echo '<p class="text-danger">Vui lòng đăng nhập để tiếp tục.</p>';
+                                }
+                                ?>
+                            </div>
                         </div>
-                      </div>
-                      <div class="col-xl-12">
-                      <div class="form-group">
-                          <label for="sdt">Số điện thoại:</label>
-                          <input
-                            type="text"
-                            id="sdt"
-                            class="form-control"
-                            value="<?= htmlspecialchars($row['sodienthoai']); ?>"
-                          />
-                        </div>
-                      </div>
-                      <div class="col-xl-12">
-                        <div class="form-group">
-                          <label for="diachi">Địa chỉ:</label>
-                          <input
-                            type="text"
-                            id="diachi"
-                            class="form-control"
-                            name="diachinhan"
-                            value="<?= htmlspecialchars($row['diachi']); ?>"
-                          />
-                        </div>
-                      </div>
-                      <div class="col-xl-12">
-                        <div class="form-group">
-                          <label for="ghichu">Ghi chú đơn hàng:</label>
-                          <textarea
-                            type="text"
-                            id="ghichu"
-                            class="form-control"
-                            placeholder="Ghi chú"
-                            name="ghichu"
-                          ></textarea>
-                        </div>
-                      </div>
-                    </div>
-                    <?php endwhile; ?>
-                </div>
-              </div>
 
                         <!-- Phương thức thanh toán -->
                        <div class="inner-item">
@@ -183,30 +168,31 @@
     <!-- Xử lý thanh toán -->
     <?php
     include "connect.php";
-    if (isset($_SESSION['makh']) && isset($_POST['thanhtoan']) && isset($_POST['pttt']) && isset($_POST['tongtien']) && isset($_POST['diachinhan'])) {
+    if (isset($_SESSION['makh']) && isset($_POST['thanhtoan']) && isset($_POST['pttt']) && isset($_POST['tongtien']) && isset($_POST['diachi'])) {
         $makh = $_SESSION['makh'];
         $pt = $_POST['pttt'];
         $tongtien = (int)$_POST['tongtien'];
-        $diachinhan = $_POST['diachinhan'];
-        $ghichu = isset($_POST['ghichu']);
+        $diachi = mysqli_real_escape_string($conn, $_POST['diachi']);
+        $ghichu = isset($_POST['ghichu']) ? mysqli_real_escape_string($conn, $_POST['ghichu']) : "";
 
-    // Thêm đơn hàng vào bảng donhang
-    $sql = "INSERT INTO donhang(makh, tongtien, PT, ghichu,diachinhan) VALUES (?, ?, ?, ?,?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("iisss", $makh, $tongtien, $pt, $ghichu,$diachinhan);
+        // Thêm đơn hàng
+        $sql = "INSERT INTO donhang (makh, tongtien, ghichu, diachi, phuongthuc) VALUES (?, ?, ?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("iisss", $makh, $tongtien, $ghichu, $diachi, $pt);
+
         if ($stmt->execute()) {
             $last_id = $conn->insert_id;
 
             // Lấy giỏ hàng
-            $sql2 = "SELECT masp, soluong, tongtien, dongia FROM giohang WHERE makh = ?";
+            $sql2 = "SELECT masp, soluong, tongtien FROM giohang WHERE makh = ?";
             $stmt2 = $conn->prepare($sql2);
             $stmt2->bind_param("i", $makh);
             $stmt2->execute();
             $result2 = $stmt2->get_result();
 
             while ($row2 = $result2->fetch_assoc()) {
-                $giabanle = $row2['dongia'];
-                $sql3 = "INSERT INTO chitietdonhang (madh, masp, soluong, dongia) VALUES (?, ?, ?, ?)";
+                $giabanle = $row2['tongtien'] / $row2['soluong']; // Tính giá bán lẻ từ tổng tiền
+                $sql3 = "INSERT INTO chitietdonhang (madh, masp, soluong, giabanle) VALUES (?, ?, ?, ?)";
                 $stmt3 = $conn->prepare($sql3);
                 $stmt3->bind_param("iiii", $last_id, $row2['masp'], $row2['soluong'], $giabanle);
                 $stmt3->execute();

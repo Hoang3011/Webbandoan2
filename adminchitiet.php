@@ -29,7 +29,7 @@
   </head>
 
   <body>
-  <?php
+      <?php
     include_once "./connect.php"; // Kết nối database
     include_once "./includes/headeradmin.php"; // Header admin
 

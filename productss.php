@@ -62,7 +62,7 @@
 
   if (isset($_SESSION['makh'])) {
       $makh = $_SESSION['makh'];
-      $sql = "SELECT madh, ngaytao, diachinhan, tongtien, PT ,trangthai FROM donhang WHERE makh = ?;";
+      $sql = "SELECT madh, ngaytao,tongtien, diachi, phuongthuc ,trangthai FROM donhang WHERE makh = ?;";
       $stmt = $conn->prepare($sql);
       $stmt->bind_param("i", $makh);
       $stmt->execute();
@@ -72,9 +72,9 @@
           echo '<tr>
                   <td><a class="active" href="chitiet.php?madh=' . $row['madh'] . '">DH' . $row['madh'] . '</a></td>
                   <td>' . date("d-m-Y", strtotime($row['ngaytao'])) . '</td>
-                  <td>' . htmlspecialchars($row['diachinhan']) . '</td>
+                  <td>' . htmlspecialchars($row['diachi']) . '</td>
                   <td>' . number_format($row['tongtien'], 0, ',', '.') . '.000₫</td>
-                  <td>' . htmlspecialchars($row['PT']) . '</td>
+                  <td>' . htmlspecialchars($row['phuongthuc']) . '</td>
                   <td>'.htmlspecialchars($row['trangthai']).'</td>
                 </tr>';
       }

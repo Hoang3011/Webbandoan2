@@ -53,7 +53,7 @@ if (isset($_SESSION['makh']) && isset($_GET['madh'])) {
     $donhang = $stmt->get_result()->fetch_assoc();
 
     // 2. Lấy danh sách sản phẩm trong đơn hàng
-    $sql2 = "SELECT sp.Image, sp.Name, ch.soluong, ch.dongia, (ch.soluong * ch.dongia) AS thanhtien 
+    $sql2 = "SELECT sp.Image, sp.Name, ch.soluong, ch.giabanle, (ch.soluong * ch.giabanle) AS thanhtien 
             FROM chitietdonhang ch 
             JOIN sanpham sp ON ch.masp = sp.ID 
             WHERE ch.madh = ?";
@@ -96,7 +96,7 @@ if (isset($_SESSION['makh']) && isset($_GET['madh'])) {
         <div class="inner-ten">ĐỊA CHỈ GIAO HÀNG</div>
         <div class="inner-gth">
         <div class="inner-ten"><?=htmlspecialchars($donhang['tenkh'])?></div>
-          <div class="inner-dc">Địa chỉ: <?= htmlspecialchars($donhang['diachinhan']) ?></div>
+          <div class="inner-dc">Địa chỉ: <?= htmlspecialchars($donhang['diachi']) ?></div>
           <div class="inner-sdt">Số điện thoại: <?= htmlspecialchars($donhang['sodienthoai'] ?? 'Không có') ?></div>
         </div>
       </div>
@@ -105,7 +105,7 @@ if (isset($_SESSION['makh']) && isset($_GET['madh'])) {
             <div class="inner-diachi">
               <div class="inner-ten">THANH TOÁN</div>
               <div class="inner-gth">
-                <div class="inner-tt"><?=htmlspecialchars($donhang['PT']);?> </div>
+                <div class="inner-tt"><?=htmlspecialchars($donhang['phuongthuc']);?> </div>
               </div>
             </div>
           </div>
