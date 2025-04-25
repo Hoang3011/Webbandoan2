@@ -1,9 +1,6 @@
 <?php
         session_start();
-        if (isset($_SESSION['error'])) {
-            echo '<p class="error-message">' . $_SESSION['error'] . '</p>';
-            unset($_SESSION['error']);
-        }
+       
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -24,7 +21,7 @@
       href="assets/font-awesome-pro-v6-6.2.0/css/all.min.css"
     />
     <link rel="stylesheet" href="assets/css/base.css" />
-    <link rel="stylesheet" href="assets/css/style.css" />
+    <!-- <link rel="stylesheet" href="assets/css/style.css" /> -->
     <title>Admin</title>
     <link href="./assets/img/logo.png" rel="icon" type="image/x-icon" />
     <style>
@@ -237,8 +234,8 @@
 
       .error-message {
         color: #ff3333;
-        text-align: center;
         margin-bottom: 1rem;
+        font-size: 15px;
       }
 
       @media screen and (min-width: 576px) {
@@ -315,7 +312,12 @@
             >
           </div>
         </div>
-
+        <?php
+         if (isset($_SESSION['error'])) {
+            echo '<p class="error-message">' . $_SESSION['error'] . '</p>';
+            unset($_SESSION['error']);
+        }
+         ?>
         <button type="submit" class="login__button">Login</button>
       </form>
     </div>
@@ -388,7 +390,7 @@
         if (document.getElementById("remember-me").checked) {
           const username = document.getElementById("login-username").value;
           const password = document.getElementById("login-pass").value;
-          setCookie("username", username, 30); // Store for 30 days
+          setCookie("username", username, 30); 
           setCookie("password", password, 30);
         } else {
           // Clear cookies if "Remember me" is not checked

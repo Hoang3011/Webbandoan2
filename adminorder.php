@@ -21,6 +21,25 @@
     include_once "./includes/headeradmin.php";
     ?>
 
+    <style>
+
+      .form-control {
+        margin-left: 10px;
+      }
+
+      .form-control:disabled{
+        margin-left: 20px;
+      }
+
+      .ml-30{
+        margin-left: 30px;
+      }
+
+      .ml-15{
+        margin-left: 15px;
+      }
+    </style>
+
     <!-- Adminorder -->
     <div class="admin-order">
       <div class="admin-control">
@@ -32,17 +51,6 @@
             <option value="Đã giao thành công">Đã giao thành công</option>
             <option value="Đã hủy đơn">Đã hủy đơn</option>
           </select>
-        </div>
-        <div class="admin-control-center">
-          <form id="search-form">
-            <span class="search-btn"><i class="fa-light fa-magnifying-glass"></i></span>
-            <input
-              id="form-search-product"
-              type="text"
-              class="form-search-input"
-              placeholder="Tìm kiếm đơn hàng..."
-            />
-          </form>
         </div>
         <div class="admin-control-right">
           <form class="fillter-date">
@@ -62,88 +70,118 @@
                 id="time-end-user"
               />
             </div>
+          </form>  
             <div>
-              <label for="province">Tỉnh/Thành</label>
               <select id="province" class="form-control">
                 <option value="">Chọn Tỉnh/Thành</option>
               </select>
             </div>
             <div>
-              <label for="district">Quận/Huyện</label>
-              <select id="district" class="form-control" disabled>
+              <select id="district" class="form-control ml-15" disabled>
                 <option value="">Chọn Quận/Huyện</option>
               </select>
             </div>
-            <button type="button" id="search-btn" class="btn btn-primary">Tìm kiếm</button>
-          </form>
-          <a href="adminorder.php" class="reset-order"><i class="fa-light fa-arrow-rotate-right"></i></a>
+            <button type="button" id="search-btn" class="reset-order ml-30"><i class="fa-light fa-magnifying-glass"></i></button>
+            <a href="adminorder.php" class="reset-order"><i class="fa-light fa-arrow-rotate-right"></i></a>
         </div>
       </div>
       <!-- End Adminorder -->
 
       <!-- Show Admin Orders -->
-      <div class="table">
-        <table width="100%" id="order-table">
-          <thead>
-            <tr>
-              <td>Mã đơn</td>
-              <td>Khách hàng</td>
-              <td>Ngày đặt</td>
-              <td>Tổng tiền</td>
-              <td>Trạng thái</td>
-              <td>Thao tác</td>
-            </tr>
-          </thead>
-          <tbody id="showOrder">
-            <?php
-            include_once 'connect.php';
-            $sql = "SELECT dh.madh, dh.makh, dh.ngaytao, dh.tongtien, dh.trangthai, kh.tenkh 
-                    FROM donhang dh 
-                    JOIN khachhang kh ON dh.makh = kh.makh";
-            $result = mysqli_query($conn, $sql);
-            if (mysqli_num_rows($result) > 0) {
-              while ($row = mysqli_fetch_assoc($result)) {
-                $madh = "DH" . $row['madh'];
-                $ngaydat = date('d/m/Y', strtotime($row['ngaytao']));
-                $tongtien = number_format($row['tongtien']) . ".000 ₫";
-                $status_class = '';
-                switch ($row['trangthai']) {
-                  case 'Chưa xác nhận':
-                    $status_class = 'status-no-complete';
-                    break;
-                  case 'Đã xác nhận':
-                    $status_class = 'status-middle-complete';
-                    break;
-                  case 'Đã giao thành công':
-                    $status_class = 'status-complete';
-                    break;
-                  case 'Đã hủy đơn':
-                    $status_class = 'status-destroy-complete';
-                    break;
-                }
-            ?>
-              <tr>
-                <td><?php echo $madh; ?></td>
-                <td><?php echo htmlspecialchars($row['tenkh']); ?></td>
-                <td><?php echo $ngaydat; ?></td>
-                <td><?php echo $tongtien; ?></td>
-                <td><span class="<?php echo $status_class; ?>"><?php echo $row['trangthai']; ?></span></td>
-                <td class="control">
-                  <a href="adminchitiet.php?madh=<?php echo $row['madh']; ?>" class="btn-detail">
-                    <i class="fa-regular fa-eye"></i> Chi tiết
-                  </a>
-                </td>
-              </tr>
-            <?php
-              }
-            } else {
-              echo "<tr><td colspan='6'>Không có đơn hàng nào</td></tr>";
-            }
-            mysqli_close($conn);
-            ?>
-          </tbody>
-        </table>
-      </div>
+<!-- Thay thế phần <div class="table"> trong adminorder.php -->
+<div class="table">
+  <table width="100%" id="order-table">
+    <thead>
+      <tr>
+        <td>Mã đơn</td>
+        <td>Khách hàng</td>
+        <td>Ngày đặt</td>
+        <td>Tổng tiền</td>
+        <td>Trạng thái</td>
+        <td>Thao tác</td>
+      </tr>
+    </thead>
+    <tbody id="showOrder">
+      <?php
+      include_once 'connect.php';
+      
+      // Thiết lập phân trang
+      $limit = 10; // Số đơn hàng mỗi trang
+      $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+      $start = ($page - 1) * $limit;
+
+      // Đếm tổng số đơn hàng
+      $total_query = "SELECT COUNT(*) AS total FROM donhang";
+      $total_result = mysqli_query($conn, $total_query);
+      $total_row = mysqli_fetch_assoc($total_result);
+      $total_orders = $total_row['total'];
+      $total_pages = ceil($total_orders / $limit);
+
+      // Truy vấn với giới hạn và offset
+      $sql = "SELECT dh.madh, dh.makh, dh.ngaytao, dh.tongtien, dh.trangthai, kh.tenkh 
+              FROM donhang dh 
+              JOIN khachhang kh ON dh.makh = kh.makh 
+              ORDER BY dh.ngaytao DESC 
+              LIMIT $start, $limit";
+      $result = mysqli_query($conn, $sql);
+
+      if (mysqli_num_rows($result) > 0) {
+        while ($row = mysqli_fetch_assoc($result)) {
+          $madh = "DH" . $row['madh'];
+          $ngaydat = date('d/m/Y', strtotime($row['ngaytao']));
+          $tongtien = number_format($row['tongtien']) . ".000 ₫";
+          $status_class = '';
+          switch ($row['trangthai']) {
+            case 'Chưa xác nhận':
+              $status_class = 'status-no-complete';
+              break;
+            case 'Đã xác nhận':
+              $status_class = 'status-middle-complete';
+              break;
+            case 'Đã giao thành công':
+              $status_class = 'status-complete';
+              break;
+            case 'Đã hủy đơn':
+              $status_class = 'status-destroy-complete';
+              break;
+          }
+      ?>
+        <tr>
+          <td><?php echo $madh; ?></td>
+          <td><?php echo htmlspecialchars($row['tenkh']); ?></td>
+          <td><?php echo $ngaydat; ?></td>
+          <td><?php echo $tongtien; ?></td>
+          <td><span class="<?php echo $status_class; ?>"><?php echo $row['trangthai']; ?></span></td>
+          <td class="control">
+            <a href="adminchitiet.php?madh=<?php echo $row['madh']; ?>" class="btn-detail">
+              <i class="fa-regular fa-eye"></i> Chi tiết
+            </a>
+          </td>
+        </tr>
+      <?php
+        }
+      } else {
+        echo "<tr><td colspan='6'>Không có đơn hàng nào</td></tr>";
+      }
+      mysqli_close($conn);
+      ?>
+    </tbody>
+  </table>
+</div>
+
+<!-- Thêm phân trang -->
+<div class="Pagination">
+  <div class="container">
+    <ul>
+      <?php
+      for ($i = 1; $i <= $total_pages; $i++) {
+        $active_class = ($i == $page) ? 'trang-chinh' : '';
+        echo '<li><a href="?page=' . $i . '" class="inner-trang ' . $active_class . '">' . $i . '</a></li>';
+      }
+      ?>
+    </ul>
+  </div>
+</div>
     </div>
     <!-- End Admin Orders-->
 
@@ -183,8 +221,7 @@
         // Search button click handler
         $('#search-btn').click(function() {
           const status = $('#tinh-trang-user').val();
-          let orderId = $('#form-search-product').val().replace('DH', '');
-          orderId = orderId ? parseInt(orderId) : '';
+          const orderId = ''; // No search input for order ID
           const startDate = $('#time-start-user').val();
           const endDate = $('#time-end-user').val();
           const province = $('#province').val();

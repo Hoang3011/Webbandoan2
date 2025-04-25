@@ -13,8 +13,60 @@
 </head>
 <body>
     <?php
-    include_once "includes/headeradmin.php"; // Giả sử bạn đã có file header
-    include_once "connect.php"; // Bao gồm file kết nối đã sửa
+    // Start session if needed for additional security
+    session_start();
+
+    // Include database connection
+    include_once "connect.php";
+
+    // Function to get cookie
+    function getCookie($name) {
+        $nameEQ = $name . "=";
+        $ca = explode(';', $_SERVER['HTTP_COOKIE'] ?? '');
+        foreach ($ca as $c) {
+            $c = trim($c);
+            if (strpos($c, $nameEQ) === 0) {
+                return substr($c, strlen($nameEQ));
+            }
+        }
+        return null;
+    }
+
+    // Check for username cookie
+    $username = getCookie("username");
+    $password = getCookie("password");
+
+    if ($username !== null && $password !== null) {
+        // Prepare SQL query to check if username and password match in nhanvien table
+        $sql = "SELECT * FROM nhanvien WHERE tennv = ? AND mk = ?";
+        $stmt = $conn->prepare($sql);
+        if ($stmt) {
+            $stmt->bind_param("ss", $username, $password);
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            if ($result->num_rows > 0) {
+                // Valid credentials, proceed to display admin page
+                $stmt->close();
+            } else {
+                // Invalid credentials, redirect to adminlogin.php
+                $stmt->close();
+                header("Location: adminlogin.php");
+                exit();
+            }
+        } else {
+            // SQL preparation failed, redirect to adminlogin.php
+            header("Location: adminlogin.php");
+            exit();
+        }
+    } else {
+        // No cookies, redirect to adminlogin.php
+        header("Location: adminlogin.php");
+        exit();
+    }
+
+    // Original admin page logic
+    include_once "includes/headeradmin.php";
 
     // 1. Tổng số khách hàng
     $sql_khachhang = "SELECT COUNT(*) as total_kh FROM khachhang";
@@ -27,14 +79,14 @@
     $total_sanpham = $result_sanpham->fetch_assoc()['total_sp'];
 
     // 3. Tổng doanh thu (chỉ tính đơn hàng thành công)
-    $sql_doanhthu = "SELECT SUM(tongtien) as total_dt FROM donhang WHERE trangthai = 'thành công'";
+    $sql_doanhthu = "SELECT SUM(tongtien) as total_dt FROM donhang WHERE trangthai = 'Đã giao thành công'";
     $result_doanhthu = $conn->query($sql_doanhthu);
-    $total_doanhthu = $result_doanhthu->fetch_assoc()['total_dt'] ?? 0; // Nếu không có dữ liệu thì trả về 0
-    $total_doanhthu_formatted = number_format($total_doanhthu, 0, ',', '.') . " ₫";
+    $total_doanhthu = $result_doanhthu->fetch_assoc()['total_dt'] ?? 0;
+    $total_doanhthu_formatted = number_format($total_doanhthu, 0, ',', '.') . ".000₫";
     ?>
 
     <div class="Tongquan">
-        <div class="inner-gth  pt-3 pb-2 mb-3">
+        <div class="inner-gth pt-3 pb-2 mb-3">
            <h1 class="page-title">Trang tổng quát của cửa hàng Đặc sản 3 miền</h1>
         </div>
 

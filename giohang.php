@@ -168,15 +168,13 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="mt-4">
-                        <p class="text-md">Ghi chú cho người bán</p>
-                        <textarea class="form-control mt-2" placeholder="Chúng tôi có thể giúp gì cho bạn?" rows="5"></textarea>
-                    </div>
+                   
                 </div>
                 <div class="col-md-4">
                     <div class="card bg-cream p-4 mb-4">
-                        <h5 class="text-uppercase font-weight-medium text-sm">MIỄN PHÍ VẬN CHUYỂN CHO ĐƠN HÀNG TỪ 500.000đ</h5>
-                        <p class="text-sm mt-2">Chúc mừng, bạn được miễn phí vận chuyển!</p>
+                        <h5 class="text-uppercase font-weight-medium text-sm">MIỄN PHÍ VẬN CHUYỂN MỪNG LỄ 30/4 – CHO TẤT CẢ ĐƠN HÀNG </h5>
+                        <p class="text-sm mt-2">🎉 Chúc mừng! Bạn được miễn phí vận chuyển nhân dịp lễ 30/4!
+                        </p>
                         <div class="bg-success w-100 mt-3"></div>
                     </div>
                     <div class="card bg-light-gray p-4">

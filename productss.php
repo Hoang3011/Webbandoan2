@@ -59,15 +59,17 @@
   </tr>
   <?php
   include "connect.php";
-
   if (isset($_SESSION['makh'])) {
       $makh = $_SESSION['makh'];
-      $sql = "SELECT madh, ngaytao,tongtien, diachi, phuongthuc ,trangthai FROM donhang WHERE makh = ?;";
+      $sql = "SELECT madh, ngaytao, diachi, tongtien, phuongthuc ,trangthai 
+              FROM donhang 
+              WHERE makh = ? 
+              ORDER BY ngaytao DESC";
       $stmt = $conn->prepare($sql);
       $stmt->bind_param("i", $makh);
       $stmt->execute();
       $result = $stmt->get_result();
-
+  
       while ($row = $result->fetch_assoc()) {
           echo '<tr>
                   <td><a class="active" href="chitiet.php?madh=' . $row['madh'] . '">DH' . $row['madh'] . '</a></td>
@@ -75,11 +77,11 @@
                   <td>' . htmlspecialchars($row['diachi']) . '</td>
                   <td>' . number_format($row['tongtien'], 0, ',', '.') . '.000₫</td>
                   <td>' . htmlspecialchars($row['phuongthuc']) . '</td>
-                  <td>'.htmlspecialchars($row['trangthai']).'</td>
+                  <td>' . htmlspecialchars($row['trangthai']) . '</td>
                 </tr>';
       }
   } else {
-      echo '<tr><td colspan="5">Bạn cần đăng nhập để xem đơn hàng.</td></tr>';
+      echo '<tr><td colspan="6">Bạn cần đăng nhập để xem đơn hàng.</td></tr>';
   }
   ?>
 </table>

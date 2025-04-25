@@ -64,7 +64,7 @@ if (isset($_SESSION['makh']) && isset($_GET['madh'])) {
 
     $tienHang = 0;
     $soLuongMon = 0;
-    $vanChuyen = 30;
+    $vanChuyen = 0;
     $sanphams = [];
 
     while ($sp = $result_sp->fetch_assoc()) {

@@ -11,4 +11,4 @@
 
 ### Hình ảnh giao diện
 
-![Alt text](./assets/img/GiaoDienWebbandoan.png)
+![Alt text](./assets/img/GiaoDienWebbandoan2.png)

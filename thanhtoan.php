@@ -16,15 +16,110 @@
     <link href="./assets/img/logo.png" rel="icon" type="image/x-icon" />
 </head>
 <body>
+    <!-- Notification -->
+    <div id="success-notification" class="notification success">
+        <div class="notification-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="notification-content">
+            <div class="notification-title">Thành công</div>
+            <div class="notification-message">Đặt hàng thành công!</div>
+        </div>
+        <button class="notification-close" onclick="closeNotification()">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
     <!-- Header -->
     <?php include "includes/headerlogin.php"; ?>
+
+    <style>
+      .form-check {
+        padding: 0px;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+      }
+
+      input[type="radio"]:checked + label:after {
+        top: 5px;
+        left: 5.5px;
+      }
+
+      input[type="radio"] + label:before {
+        top: 0px;
+        left: 0px;
+      }
+
+      /* Notification styles */
+      .notification {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 15px 20px;
+        border-radius: 5px;
+        background-color: #fff;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out;
+        min-width: 300px;
+      }
+
+      .notification.show {
+        opacity: 1;
+      }
+
+      .notification-icon {
+        margin-right: 10px;
+      }
+
+      .notification-icon i {
+        color: #28a745;
+        font-size: 24px;
+      }
+
+      .notification-content {
+        flex-grow: 1;
+      }
+
+      .notification-title {
+        font-weight: bold;
+        font-size: 16px;
+        color: #333;
+      }
+
+      .notification-message {
+        font-size: 14px;
+        color: #666;
+      }
+
+      .notification-close {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 5px;
+      }
+
+      .notification-close i {
+        color: #999;
+        font-size: 16px;
+      }
+
+      .notification-close:hover i {
+        color: #333;
+      }
+    </style>
 
     <!-- Account -->
     <div class="ThongTin">
         <div class="container">
-            <div class="row">
-                <form action="thanhtoan.php" method="post">
-                    <div class="col-xl-7 col-lg-7 col-md-6 col-sm-12">
+          <form action="thanhtoan.php" method="post">
+              <div class="row">
+                  <div class="col-xl-7 col-lg-7 col-md-6 col-sm-12">
                         <!-- Giỏ hàng -->
                         <div class="inner-item">
                             <div class="inner-tt">Giỏ hàng</div>
@@ -111,23 +206,22 @@
                         </div>
 
                         <!-- Phương thức thanh toán -->
-                       <div class="inner-item">
-                        <div class="PhuongThuc">
-                            <div class="inner-tt">Phương thức thanh toán</div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="pttt" id="pttt_tienmat" value="Tiền mặt" required checked />
-                                <label class="form-check-label" for="pttt_tienmat">Thanh toán tiền mặt khi nhận hàng</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="pttt" id="pttt_chuyenkhoan" value="Chuyển khoản" />
-                                <label class="form-check-label" for="pttt_chuyenkhoan">Chuyển khoản ngân hàng</label>
+                        <div class="inner-item">
+                            <div class="PhuongThuc">
+                                <div class="inner-tt">Phương thức thanh toán</div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="pttt" id="pttt_tienmat" value="Tiền mặt" required checked />
+                                    <label class="form-check-label" for="pttt_tienmat">Thanh toán tiền mặt khi nhận hàng</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="pttt" id="pttt_chuyenkhoan" value="Chuyển khoản" />
+                                    <label class="form-check-label" for="pttt_chuyenkhoan">Chuyển khoản ngân hàng</label>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    </div>
-
-                    <!-- Tổng tiền -->
-                    <div class="col-xl-5 col-lg-5 col-md-6 col-sm-12">
+                  </div>
+                  <!-- Tổng tiền -->
+                  <div class="col-xl-5 col-lg-5 col-md-6 col-sm-12">
                         <?php
                         if (isset($_SESSION['makh'])) {
                             $makh = $_SESSION['makh'];
@@ -147,6 +241,10 @@
                                         <div class="inner-st">' . $tong_tien . '</div>
                                         <input type="hidden" name="tongtien" value="' . $tien_so . '" />
                                     </div>
+                                      <div class="inner-tien">
+                                      <div class="inner-pvc">Phí vận chuyển</div>
+                                      <div class="inner-st">0.000 ₫</div>
+                                    </div>
                                     <div class="inner-tientong">
                                         <div class="inner-tong">Tổng tiền</div>
                                         <div class="inner-total">' . $tong_tien . '</div>
@@ -159,9 +257,9 @@
                             $stmt1->close();
                         }
                         ?>
-                    </div>
-                </form>
-            </div>
+                  </div>
+              </div>
+          </form>
         </div>
     </div>
 
@@ -191,7 +289,7 @@
             $result2 = $stmt2->get_result();
 
             while ($row2 = $result2->fetch_assoc()) {
-                $giabanle = $row2['tongtien'] / $row2['soluong']; // Tính giá bán lẻ từ tổng tiền
+                $giabanle = $row2['tongtien'] / $row2['soluong'];
                 $sql3 = "INSERT INTO chitietdonhang (madh, masp, soluong, giabanle) VALUES (?, ?, ?, ?)";
                 $stmt3 = $conn->prepare($sql3);
                 $stmt3->bind_param("iiii", $last_id, $row2['masp'], $row2['soluong'], $giabanle);
@@ -209,8 +307,31 @@
             $stmt2->close();
             $stmt->close();
 
-            // Chuyển hướng sau khi thanh toán thành công
-            header("Location: login.php"); 
+            // Hiển thị thông báo thành công
+            echo '
+            <script>
+                function showNotification() {
+                    var notification = document.getElementById("success-notification");
+                    notification.classList.add("show");
+                    setTimeout(function() {
+                        notification.classList.remove("show");
+                        setTimeout(function() {
+                            window.location.href = "login.php";
+                        }, 500);
+                    }, 1000);
+                }
+
+                function closeNotification() {
+                    var notification = document.getElementById("success-notification");
+                    notification.classList.remove("show");
+                    setTimeout(function() {
+                        window.location.href = "login.php";
+                    }, 500);
+                }
+
+                showNotification();
+            </script>';
+
             exit();
         } else {
             echo '<div class="container"><p class="text-danger">Lỗi khi thêm đơn hàng: ' . htmlspecialchars($stmt->error) . '</p></div>';
