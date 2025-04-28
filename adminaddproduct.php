@@ -199,22 +199,22 @@ if (isset($_POST['addproduct'])) {
             </div>
         </div>
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-        <form action="" method="POST" enctype="multipart/form-data">
-            <div class="inner-item">
+        <form action="addproduct.php" method="POST" enctype="multipart/form-data">
+        <div class="inner-item">
                 <div class="inner-img">
                     <img id="preview" src="assets/img/admin/blank-image.png" />
                 </div>
                 <div class="inner-choose">
-                    <label for="choose">
-                        <i class="fa-light fa-cloud-arrow-up"></i> Chọn hình ảnh
-                    </label>
-                    <input
-                        id="choose"
-                        type="file"
-                        accept="image/png, image/jpg, image/jpeg, image/gif"
-                        name="Images"
-                        onchange="previewImage(event)"
-                    />
+                  <label for="choose">
+                    <i class="fa-light fa-cloud-arrow-up"></i> Chọn hình ảnh
+                  </label>
+                  <input
+                    id="choose"
+                    type="file"
+                    accept="image/png, image/jpg, image/jpeg, image/gif"
+                    name="Images"
+                    onchange="previewImage(event)"
+                  />
                 </div>
             </div>
         </div>
@@ -241,6 +241,47 @@ if (isset($_POST['addproduct'])) {
                         <label for="sell">Giá bán</label>
                         <input type="number" id="sell" name="Price" class="form-control" placeholder="Nhập giá bán" required />
                     </div>
+                    <script>
+                      document.getElementById('sell').addEventListener('input', function(e) {
+    // Lấy giá trị nhập vào, loại bỏ các ký tự không phải số
+    let value = e.target.value.replace(/\D/g, '');
+    
+    // Định dạng số với dấu chấm mỗi 3 chữ số
+    if (value) {
+        value = parseInt(value).toString(); // Chuyển thành chuỗi số nguyên
+        let formattedValue = '';
+        for (let i = value.length - 1, count = 0; i >= 0; i--) {
+            formattedValue = value[i] + formattedValue;
+            count++;
+            if (count % 3 === 0 && i !== 0) {
+                formattedValue = '.' + formattedValue;
+            }
+        }
+        e.target.value = formattedValue;
+    }
+});
+
+// Xử lý khi người dùng xóa hoặc chỉnh sửa
+document.getElementById('sell').addEventListener('keydown', function(e) {
+    if (e.key === 'Backspace' || e.key === 'Delete') {
+        setTimeout(() => {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value) {
+                value = parseInt(value).toString();
+                let formattedValue = '';
+                for (let i = value.length - 1, count = 0; i >= 0; i--) {
+                    formattedValue = value[i] + formattedValue;
+                    count++;
+                    if (count % 3 === 0 && i !== 0) {
+                        formattedValue = '.' + formattedValue;
+                    }
+                }
+                e.target.value = formattedValue;
+            }
+        }, 0);
+    }
+});
+                    </script>
                     <div class="form-group">
                         <label for="desc">Mô tả</label>
                         <textarea name="Describtion" id="desc" class="form-control" placeholder="Nhập mô tả món ăn..." required></textarea>
@@ -256,15 +297,16 @@ if (isset($_POST['addproduct'])) {
     </div>
 </div>
 
-<script>
-function previewImage(event) {
-    var reader = new FileReader();
-    reader.onload = function(){
-        var output = document.getElementById('preview');
-        output.src = reader.result;
-    };
-    reader.readAsDataURL(event.target.files[0]);
-}
+    <script>
+          function previewImage(event) {
+            var reader = new FileReader();
+            reader.onload = function(){
+              var output = document.getElementById('preview');
+              output.src = reader.result;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+          }
+        </script>
 </script>
 
 

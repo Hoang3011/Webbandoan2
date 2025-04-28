@@ -153,13 +153,13 @@ function searchProducts(sortOrder = 0, page = 1) {
           (product) => `
         <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12">
           <div class="inner-item">
-            <a href="chitietsp.php?id=${product.ID}" class="inner-img">
+            <a href="chitietsp-login.php?id=${product.ID}" class="inner-img">
               <img src="${product.Image}" alt="${product.Name}" />
             </a>
             <div class="inner-info">
               <div class="inner-ten">${product.Name}</div>
               <div class="inner-gia">${product.Price}.000 ₫</div>
-              <a href="chitietsp.php?id=${product.ID}" class="inner-muahang">
+              <a href="chitietsp-login.php?id=${product.ID}" class="inner-muahang">
                 <i class="fa-solid fa-cart-plus"></i> ĐẶT MÓN
               </a>
             </div>

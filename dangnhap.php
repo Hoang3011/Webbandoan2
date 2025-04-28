@@ -91,17 +91,24 @@
               $password = $_POST['password'];
               $sql = "SELECT * FROM khachhang WHERE sodienthoai = ? AND matkhau = ?";
               $stmt = $conn->prepare($sql);
-              $stmt->bind_param("ss",$phonenumber, $password);
+              $stmt->bind_param("ss", $phonenumber, $password);
               $stmt->execute();
               $result = $stmt->get_result();
               if ($result->num_rows == 1) {
                   $row = $result->fetch_assoc();
-                  // Thiết lập tất cả các biến phiên cần thiết
-                  $_SESSION['sodienthoai'] = $row['sodienthoai'];
-                  $_SESSION['mySession'] = $row['tenkh'];
-                  $_SESSION['makh'] = $row['makh'];
-                  header("Location: login.php"); // Chuyển hướng đến trang chính
-                  exit();
+                  // Kiểm tra trạng thái tài khoản
+                  if ($row['trangthai'] == 'Locked') {
+                      echo '<div class="alert alert-danger">Tài khoản đã bị khóa</div>';
+                  } elseif ($row['trangthai'] == 'Active') {
+                      // Thiết lập tất cả các biến phiên cần thiết
+                      $_SESSION['sodienthoai'] = $row['sodienthoai'];
+                      $_SESSION['mySession'] = $row['tenkh'];
+                      $_SESSION['makh'] = $row['makh'];
+                      header("Location: login.php"); // Chuyển hướng đến trang chính
+                      exit();
+                  } else {
+                      echo '<div class="alert alert-danger">Trạng thái tài khoản không hợp lệ</div>';
+                  }
               } else {
                   echo '<div class="alert alert-danger">Sai tài khoản hoặc mật khẩu</div>';
               }

@@ -7,12 +7,15 @@ print_r($_POST);
 echo "</pre>";
 
 // Kiểm tra xem có dữ liệu từ form không
-if (isset($_POST['id']) && isset($_POST['Name']) && isset($_POST['Price']) && isset($_POST['Describtion']) && isset($_POST['Type'])) {
+if (isset($_POST['id']) && isset($_POST['Name']) && isset($_POST['Price']) && isset($_POST['Describtion']) && isset($_POST['Type']) && isset($_POST['Visible'])) {
     $id = intval($_POST['id']);
     $name = mysqli_real_escape_string($conn, $_POST['Name']);
-    $price = mysqli_real_escape_string($conn, $_POST['Price']);
+    // Lọc dấu chấm và chia cho 1000
+    $price = intval(str_replace('.', '', $_POST['Price'])) / 1000;
+    $price = mysqli_real_escape_string($conn, $price);
     $desc = mysqli_real_escape_string($conn, $_POST['Describtion']);
     $type = mysqli_real_escape_string($conn, $_POST['Type']);
+    $visible = intval($_POST['Visible']); // Lấy giá trị Visible (0 hoặc 1)
 
     // Kiểm tra xem có hình ảnh mới không
     if (isset($_FILES['Images']) && $_FILES['Images']['error'] == 0) { // Đổi 'Image' thành 'Images'
@@ -51,8 +54,8 @@ if (isset($_POST['id']) && isset($_POST['Name']) && isset($_POST['Price']) && is
     }
 
     // Cập nhật dữ liệu vào database với Prepared Statements
-    $stmt = $conn->prepare("UPDATE sanpham SET Name = ?, Price = ?, Describtion = ?, Type = ?, Image = ? WHERE ID = ?");
-    $stmt->bind_param("sdsssi", $name, $price, $desc, $type, $image_path, $id);
+    $stmt = $conn->prepare("UPDATE sanpham SET Name = ?, Price = ?, Describtion = ?, Type = ?, Image = ?, Visible = ? WHERE ID = ?");
+    $stmt->bind_param("sdsssii", $name, $price, $desc, $type, $image_path, $visible, $id);
     if ($stmt->execute()) {
         header("Location: adminproduct.php"); // Chuyển hướng về trang quản lý sản phẩm
         exit();

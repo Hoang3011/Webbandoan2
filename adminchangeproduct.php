@@ -239,6 +239,14 @@
                 </select>
               </div>
               
+              <div class="inner-select">
+                <label for="select">Trạng thái</label>
+                <select name="Visible" id="select" class="form-control">
+                  <option value="1" <?php echo ($row['Visible'] == '1') ? 'selected' : ''; ?>>Đang kinh doanh</option>
+                  <option value="0" <?php echo ($row['Visible'] == '0') ? 'selected' : ''; ?>>Ngừng kinh doanh</option>
+                </select>
+              </div>
+
               <div class="form-group">
                 <label for="sell">Giá bán</label>
                 <input 
@@ -247,11 +255,55 @@
                   name="Price" 
                   class="form-control" 
                   placeholder="Nhập giá bán" 
-                  value="<?php echo htmlspecialchars($row['Price']); ?>" 
+                  value="<?php echo htmlspecialchars($row['Price'] * 1000); ?>" 
                   required 
                 />
               </div>
-              
+              <script>
+                document.getElementById('sell').type = 'text'; // Change input type to text to support formatting
+
+            // Function to format number with dots
+            function formatPrice(value) {
+                // Remove non-digit characters
+                value = value.replace(/\D/g, '');
+                if (!value) return '';
+                // Convert to integer string
+                value = parseInt(value).toString();
+                // Add dots every 3 digits from the right
+                let formattedValue = '';
+                for (let i = value.length - 1, count = 0; i >= 0; i--) {
+                    formattedValue = value[i] + formattedValue;
+                    count++;
+                    if (count % 3 === 0 && i !== 0) {
+                        formattedValue = '.' + formattedValue;
+                    }
+                }
+                return formattedValue;
+            }
+
+            // Format initial value from database
+            document.getElementById('sell').value = formatPrice(document.getElementById('sell').value);
+
+            // Handle input event
+            document.getElementById('sell').addEventListener('input', function(e) {
+                e.target.value = formatPrice(e.target.value);
+            });
+
+            // Handle keydown for Backspace/Delete
+            document.getElementById('sell').addEventListener('keydown', function(e) {
+                if (e.key === 'Backspace' || e.key === 'Delete') {
+                    setTimeout(() => {
+                        e.target.value = formatPrice(e.target.value);
+                    }, 0);
+                }
+            });
+
+            // Ensure clean number for form submission
+            document.querySelector('form').addEventListener('submit', function(e) {
+                let input = document.getElementById('sell');
+                input.value = input.value.replace(/\D/g, ''); // Remove dots before submission
+            });
+              </script>
               <div class="form-group">
                 <label for="desc">Mô tả</label>
                 <textarea 

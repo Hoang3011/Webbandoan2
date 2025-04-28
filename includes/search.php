@@ -13,8 +13,18 @@ if ($conn->connect_error) {
 // Nhận dữ liệu từ request
 $name = isset($_POST["name"]) ? trim($_POST["name"]) : '';
 $category = isset($_POST["category"]) ? trim($_POST["category"]) : '';
-$min_price = filter_input(INPUT_POST, "min_price", FILTER_VALIDATE_FLOAT);
-$max_price = filter_input(INPUT_POST, "max_price", FILTER_VALIDATE_FLOAT);
+$min_price_raw = isset($_POST["min_price"]) ? $_POST["min_price"] : '';
+$max_price_raw = isset($_POST["max_price"]) ? $_POST["max_price"] : '';
+
+// Xử lý định dạng: loại bỏ dấu . và 3 số 0 cuối, sau đó ép kiểu số
+function clean_price($raw_price) {
+    $numeric = str_replace('.', '', $raw_price); // Bỏ dấu chấm
+    $trimmed = preg_replace('/000$/', '', $numeric); // Bỏ 3 số 0 cuối nếu có
+    return is_numeric($trimmed) ? (int)$trimmed : null;
+}
+
+$min_price = clean_price($min_price_raw);
+$max_price = clean_price($max_price_raw);
 $sort_order = filter_input(INPUT_POST, "sort_order", FILTER_VALIDATE_INT);
 $page = isset($_POST["page"]) ? (int)$_POST["page"] : 1;
 $limit = 12; // Số sản phẩm mỗi trang
