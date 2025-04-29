@@ -192,13 +192,14 @@ INSERT INTO `nhanvien` (`manv`, `tennv`, `sodienthoai`, `mk`) VALUES
 --
 
 CREATE TABLE `sanpham` (
-  `ID` int(11) NOT NULL,
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
   `Name` varchar(255) NOT NULL,
   `Image` varchar(255) NOT NULL,
   `Price` int(255) NOT NULL,
   `Describtion` varchar(255) NOT NULL,
   `Type` enum('món chay','món mặn','món lẩu','món ăn vặt','món tráng miệng','nước uống','hải sản') NOT NULL,
-  `Visible` tinyint(1) NOT NULL DEFAULT 1
+  `Visible` tinyint(1) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
