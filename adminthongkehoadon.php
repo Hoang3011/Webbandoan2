@@ -3,7 +3,7 @@ session_start();
 
 // Database connection
 try {
-    $pdo = new PDO("mysql:host=127.0.0.1;dbname=webbandoan222;zcharset=utf8", "root", "");
+    $pdo = new PDO("mysql:host=127.0.0.1;dbname=webbandoan2;zcharset=utf8", "root", "");
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
     die("Connection failed: " . $e->getMessage());
@@ -54,7 +54,7 @@ $items = $stmt_items->fetchAll(PDO::FETCH_ASSOC);
 $itemCount = array_sum(array_column($items, 'quantity'));
 $subtotal = array_sum(array_map(function($item) { return $item['quantity'] * $item['price']; }, $items));
 $shippingCost = 0; // Fixed shipping cost set to 0
-$total = ($subtotal * 1000) + $shippingCost;
+$total = ($subtotal * 1) + $shippingCost;
 ?>
 
 <!DOCTYPE html>
@@ -234,17 +234,17 @@ $total = ($subtotal * 1000) + $shippingCost;
                                             <div class="inner-sl">x<?php echo $item['quantity']; ?></div>
                                         </div>
                                     </div>
-                                    <div class="inner-gia"><?php echo number_format($item['quantity'] * $item['price'] * 1000, 0, ',', '.'); ?> ₫</div>
+                                    <div class="inner-gia"><?php echo number_format($item['quantity'] * $item['price'] * 1, 0, ',', '.'); ?> ₫</div>
                                 </div>
                             <?php endforeach; ?>
                             <div class="inner-tonggia">
                                 <div class="inner-tien">
                                     <div class="inner-th">Tiền hàng <span><?php echo $itemCount; ?> món</span></div>
-                                    <div class="inner-st"><?php echo number_format($subtotal * 1000, 0, ',', '.'); ?> ₫</div>
+                                    <div class="inner-st"><?php echo number_format($subtotal * 1, 0, ',', '.'); ?> ₫</div>
                                 </div>
                                 <div class="inner-vanchuyen">
                                     <span class="inner-vc1">Vận chuyển</span>
-                                    <span class="inner-vc2"><?php echo number_format($shippingCost, 0, ',', '.'); ?>.000₫</span>
+                                    <span class="inner-vc2"><?php echo number_format($shippingCost, 0, ',', '.'); ?>₫</span>
                                 </div>
                                 <div class="inner-total">
                                     <span class="inner-tong1">Tổng tiền:</span>

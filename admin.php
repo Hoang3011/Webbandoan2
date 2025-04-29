@@ -82,7 +82,7 @@
     $sql_doanhthu = "SELECT SUM(tongtien) as total_dt FROM donhang WHERE trangthai = 'Đã giao thành công'";
     $result_doanhthu = $conn->query($sql_doanhthu);
     $total_doanhthu = $result_doanhthu->fetch_assoc()['total_dt'] ?? 0;
-    $total_doanhthu_formatted = number_format($total_doanhthu, 0, ',', '.') . ".000₫";
+    $total_doanhthu_formatted = number_format($total_doanhthu, 0, ',', '.') . "₫";
     ?>
 
     <div class="Tongquan">

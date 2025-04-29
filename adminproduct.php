@@ -58,41 +58,46 @@
 
           $total_pages = ceil($total_products / $limit);
 
-                  
-        $sql = "SELECT * FROM sanpham LIMIT $start, $limit";
-        $result = mysqli_query($conn, $sql);
+          $sql = "SELECT * FROM sanpham LIMIT $start, $limit";
+          $result = mysqli_query($conn, $sql);
 
-        while ($row = mysqli_fetch_array($result)) {
-          // Kiểm tra Visible
-          $borderStyle = ($row['Visible'] == 0) ? 'style="border: 1px solid red;"' : '';
-        ?>
+          while ($row = mysqli_fetch_array($result)) {
+            // Kiểm tra nếu Visible = -1, bỏ qua sản phẩm
+            if ($row['Visible'] == -1) {
+                continue;
+            }
+            // Kiểm tra Visible cho viền đỏ
+            $borderStyle = ($row['Visible'] == 0) ? 'style="border: 1px solid red;"' : '';
+            // Format price
+            $formattedPrice = number_format($row['Price'], 0, ',', '.') . 'đ';
+          ?>
           <div class="col-12">
-            <div class="list" data-id="<?= $row['ID']; ?>" <?= $borderStyle; ?>>
-              <div class="list-left">
-                <img src="<?php echo $row['Image']; ?>" alt="<?php echo $row['Name']; ?>" />
-                <div class="list-info">
-                  <h4><?php echo $row['Name']; ?></h4>
-                  <p><?php echo $row['Describtion']; ?></p>
-                  <div class="list-category"><?php echo $row['Type']; ?></div>
-                </div>
-              </div>
-              <div class="list-right">
-                <div class="list-price"><?php echo $row['Price'] . ".000₫"; ?></div>
-                <div class="list-control">
-                  <div class="list-tool">
-                    <a href="adminchangeproduct.php?id=<?= $row['ID']; ?>" class="btn-edit">
-                      <i class="fa-light fa-pen-to-square"></i>
-                    </a>
-                    <button class="btn-delete" onclick="confirmDelete(<?= $row['ID']; ?>)">
-                      <i class="fa-regular fa-trash"></i>
-                    </button>
+              <div class="list" data-id="<?= $row['ID']; ?>" <?= $borderStyle; ?>>
+                  <div class="list-left">
+                      <img src="<?php echo $row['Image']; ?>" alt="<?php echo $row['Name']; ?>" />
+                      <div class="list-info">
+                          <h4><?php echo $row['Name']; ?></h4>
+                          <p><?php echo $row['Describtion']; ?></p>
+                          <div class="list-category"><?php echo $row['Type']; ?></div>
+                      </div>
                   </div>
-                </div>
+                  <div class="list-right">
+                      <div class="list-price"><?php echo $formattedPrice; ?></div>
+                      <div class="list-control">
+                          <div class="list-tool">
+                              <a href="adminchangeproduct.php?id=<?= $row['ID']; ?>" class="btn-edit">
+                                  <i class="fa-light fa-pen-to-square"></i>
+                              </a>
+                              <button class="btn-delete" onclick="confirmDelete(<?= $row['ID']; ?>)">
+                                  <i class="fa-regular fa-trash"></i>
+                              </button>
+                          </div>
+                      </div>
+                  </div>
               </div>
-            </div>
           </div>
-        <?php } ?>
-      </div>
+          <?php } ?>
+        </div>
 
         <div class="Pagination">
           <div class="container">
@@ -117,200 +122,212 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
-  function fetchProducts() {
-    fetchProductsPage(1);
-  }
+      // Function to format price in JavaScript
+      function formatPrice(price) {
+        return parseInt(price).toLocaleString('vi-VN') + 'đ';
+      }
 
-  function fetchProductsPage(page) {
-    var category = document.getElementById("the-loai").value;
-    var searchTerm = document.getElementById("form-search-product").value;
+      function fetchProducts() {
+        fetchProductsPage(1);
+      }
 
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "./includes/searchadmin.php", true);
-    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+      function fetchProductsPage(page) {
+        var category = document.getElementById("the-loai").value;
+        var searchTerm = document.getElementById("form-search-product").value;
 
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState == 4 && xhr.status == 200) {
-        try {
-          // Parse the JSON response
-          var response = JSON.parse(xhr.responseText);
-          var products = response.products || [];
-          var total_pages = response.total_pages || 1;
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "./includes/searchadmin.php", true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
-          // Generate HTML for the product list
-          var html = '<div class="row">';
-          if (products.length === 0) {
-            html += '<p>Không tìm thấy sản phẩm nào.</p>';
-          } else {
-            products.forEach(function (product) {
-              html += `
-                <div class="col-12">
-                  <div class="list" style="${product.Visible == 0 ? 'border: 1px solid red;' : ''}" data-id="${product.ID}">
-                    <div class="list-left">
-                      <img src="${product.Image}" alt="${product.Name}" />
-                      <div class="list-info">
-                        <h4>${product.Name}</h4>
-                        <p>${product.Describtion}</p>
-                        <div class="list-category">${product.Type}</div>
-                      </div>
-                    </div>
-                    <div class="list-right">
-                      <div class="list-price">${product.Price}.000₫</div>
-                      <div class="list-control">
-                        <div class="list-tool">
-                          <a href="adminchangeproduct.php?id=${product.ID}" class="btn-edit">
-                            <i class="fa-light fa-pen-to-square"></i>
-                          </a>
-                          <button class="btn-delete" onclick="confirmDelete(${product.ID})">
-                            <i class="fa-regular fa-trash"></i>
-                          </button>
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState == 4 && xhr.status == 200) {
+            try {
+              // Parse the JSON response
+              var response = JSON.parse(xhr.responseText);
+              var products = response.products || [];
+              var total_pages = response.total_pages || 1;
+
+              // Generate HTML for the product list
+              var html = '<div class="row">';
+              if (products.length === 0) {
+                html += '<p>Không tìm thấy sản phẩm nào.</p>';
+              } else {
+                products.forEach(function (product) {
+                  // Kiểm tra nếu Visible = -1, bỏ qua sản phẩm
+                  if (product.Visible == -1) {
+                    return;
+                  }
+                  // Format price
+                  var formattedPrice = formatPrice(product.Price);
+                  html += `
+                    <div class="col-12">
+                      <div class="list" style="${product.Visible == 0 ? 'border: 1px solid red;' : ''}" data-id="${product.ID}">
+                        <div class="list-left">
+                          <img src="${product.Image}" alt="${product.Name}" />
+                          <div class="list-info">
+                            <h4>${product.Name}</h4>
+                            <p>${product.Describtion}</p>
+                            <div class="list-category">${product.Type}</div>
+                          </div>
+                        </div>
+                        <div class="list-right">
+                          <div class="list-price">${formattedPrice}</div>
+                          <div class="list-control">
+                            <div class="list-tool">
+                              <a href="adminchangeproduct.php?id=${product.ID}" class="btn-edit">
+                                <i class="fa-light fa-pen-to-square"></i>
+                              </a>
+                              <button class="btn-delete" onclick="confirmDelete(${product.ID})">
+                                <i class="fa-regular fa-trash"></i>
+                              </button>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-              `;
-            });
-          }
-          html += '</div>';
+                  `;
+                });
+              }
+              html += '</div>';
 
-          // Add pagination
-          if (total_pages > 1) {
-            html += '<div class="Pagination"><div class="container"><ul>';
-            for (var i = 1; i <= total_pages; i++) {
-              var activeClass = i === page ? 'trang-chinh' : '';
-              html += `<li><a href="#" class="inner-trang ${activeClass}" onclick="fetchProductsPage(${i}); return false;">${i}</a></li>`;
+              // Add pagination
+              if (total_pages > 1) {
+                html += '<div class="Pagination"><div class="container"><ul>';
+                for (var i = 1; i <= total_pages; i++) {
+                  var activeClass = i === page ? 'trang-chinh' : '';
+                  html += `<li><a href="#" class="inner-trang ${activeClass}" onclick="fetchProductsPage(${i}); return false;">${i}</a></li>`;
+                }
+                html += '</ul></div></div>';
+              }
+
+              // Update the product-results div
+              document.getElementById("product-results").innerHTML = html;
+              document.getElementById("product-results").style.display = "block";
+              document.getElementById("default-product-list").style.display = "none";
+            } catch (e) {
+              console.error("Error parsing JSON:", e);
+              document.getElementById("product-results").innerHTML = "<p>Lỗi khi tải sản phẩm.</p>";
+              document.getElementById("product-results").style.display = "block";
+              document.getElementById("default-product-list").style.display = "none";
             }
-            html += '</ul></div></div>';
           }
+        };
 
-          // Update the product-results div
-          document.getElementById("product-results").innerHTML = html;
-          document.getElementById("product-results").style.display = "block";
-          document.getElementById("default-product-list").style.display = "none";
-        } catch (e) {
-          console.error("Error parsing JSON:", e);
-          document.getElementById("product-results").innerHTML = "<p>Lỗi khi tải sản phẩm.</p>";
-          document.getElementById("product-results").style.display = "block";
-          document.getElementById("default-product-list").style.display = "none";
-        }
+        xhr.send("category=" + encodeURIComponent(category) + "&search=" + encodeURIComponent(searchTerm) + "&page=" + page);
       }
-    };
 
-    xhr.send("category=" + encodeURIComponent(category) + "&search=" + encodeURIComponent(searchTerm) + "&page=" + page);
-  }
+      function resetSearch() {
+        document.getElementById("form-search-product").value = "";
+        document.getElementById("the-loai").value = "";
+        document.getElementById("product-results").innerHTML = "";
+        document.getElementById("product-results").style.display = "none";
+        document.getElementById("default-product-list").style.display = "block";
+      }
 
-  function resetSearch() {
-    document.getElementById("form-search-product").value = "";
-    document.getElementById("the-loai").value = "";
-    document.getElementById("product-results").innerHTML = "";
-    document.getElementById("product-results").style.display = "none";
-    document.getElementById("default-product-list").style.display = "block";
-  }
+      function confirmDelete(productId) {
+        // Gửi yêu cầu AJAX để kiểm tra Visible
+        var xhrCheck = new XMLHttpRequest();
+        xhrCheck.open("POST", "check_visible.php", true);
+        xhrCheck.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
-  function confirmDelete(productId) {
-    // Gửi yêu cầu AJAX để kiểm tra Visible
-    var xhrCheck = new XMLHttpRequest();
-    xhrCheck.open("POST", "check_visible.php", true);
-    xhrCheck.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
-    xhrCheck.onreadystatechange = function () {
-        if (xhrCheck.readyState == 4 && xhrCheck.status == 200) {
+        xhrCheck.onreadystatechange = function () {
+          if (xhrCheck.readyState == 4 && xhrCheck.status == 200) {
             var response = xhrCheck.responseText;
             if (response === "visible") {
-                // Trường hợp Visible = 1: Hiển thị thông báo ẩn sản phẩm
-                Swal.fire({
-                    title: 'Bạn có muốn ẩn món ăn?',
-                    text: "Món ăn này sẽ bị ẩn khỏi hệ thống!",
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Ẩn',
-                    cancelButtonText: 'Hủy'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // Gửi yêu cầu cập nhật Visible = 0
-                        var xhr = new XMLHttpRequest();
-                        xhr.open("POST", "deleteproduct.php", true);
-                        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+              // Trường hợp Visible = 1: Hiển thị thông báo ẩn sản phẩm
+              Swal.fire({
+                title: "Bạn có muốn ẩn món ăn?",
+                text: "Món ăn này sẽ bị ẩn khỏi hệ thống!",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Ẩn",
+                cancelButtonText: "Hủy",
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  // Gửi yêu cầu cập nhật Visible = 0
+                  var xhr = new XMLHttpRequest();
+                  xhr.open("POST", "deleteproduct.php", true);
+                  xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
-                        xhr.onreadystatechange = function () {
-                            if (xhr.readyState == 4) {
-                                if (xhr.status == 200 && xhr.responseText === "success") {
-                                    Swal.fire(
-                                        'Đã ẩn!',
-                                        'Món ăn đã được ẩn thành công.',
-                                        'success'
-                                    ).then(() => {
-                                        document.querySelector(`.list[data-id="${productId}"]`)?.remove();
-                                    });
-                                } else {
-                                    Swal.fire(
-                                        'Lỗi!',
-                                        'Không thể ẩn món ăn: ' + xhr.responseText,
-                                        'error'
-                                    );
-                                }
-                            }
-                        };
-
-                        xhr.send("id=" + productId);
+                  xhr.onreadystatechange = function () {
+                    if (xhr.readyState == 4) {
+                      if (xhr.status == 200 && xhr.responseText === "success") {
+                        Swal.fire(
+                          "Đã ẩn!",
+                          "Món ăn đã được ẩn thành công.",
+                          "success"
+                        ).then(() => {
+                          // Thêm viền đỏ thay vì xóa phần tử
+                          const productElement = document.querySelector(`.list[data-id="${productId}"]`);
+                          if (productElement) {
+                            productElement.style.border = "1px solid red";
+                          }
+                        });
+                      } else {
+                        Swal.fire(
+                          "Lỗi!",
+                          "Không thể ẩn món ăn: " + xhr.responseText,
+                          "error"
+                        );
+                      }
                     }
-                });
+                  };
+
+                  xhr.send("id=" + productId);
+                }
+              });
             } else if (response === "hidden") {
-                // Trường hợp Visible = 0: Hiển thị thông báo xóa vĩnh viễn
-                Swal.fire({
-                    title: 'Bạn có chắc chắn?',
-                    text: "Món ăn này sẽ bị xóa vĩnh viễn!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Xóa',
-                    cancelButtonText: 'Hủy'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // Gửi yêu cầu xóa sản phẩm
-                        var xhr = new XMLHttpRequest();
-                        xhr.open("POST", "deleteproduct.php", true);
-                        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+              // Trường hợp Visible = 0: Hiển thị thông báo xóa vĩnh viễn
+              Swal.fire({
+                title: "Bạn có chắc chắn?",
+                text: "Món ăn này sẽ bị xóa vĩnh viễn!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Xóa",
+                cancelButtonText: "Hủy",
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  // Gửi yêu cầu xóa sản phẩm
+                  var xhr = new XMLHttpRequest();
+                  xhr.open("POST", "deleteproduct.php", true);
+                  xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
-                        xhr.onreadystatechange = function () {
-                            if (xhr.readyState == 4) {
-                                if (xhr.status == 200 && xhr.responseText === "success") {
-                                    Swal.fire(
-                                        'Đã xóa!',
-                                        'Món ăn đã được xóa thành công.',
-                                        'success'
-                                    ).then(() => {
-                                        document.querySelector(`.list[data-id="${productId}"]`)?.remove();
-                                    });
-                                } else {
-                                    Swal.fire(
-                                        'Lỗi!',
-                                        'Không thể xóa món ăn: ' + xhr.responseText,
-                                        'error'
-                                    );
-                                }
-                            }
-                        };
-
-                        xhr.send("id=" + productId);
+                  xhr.onreadystatechange = function () {
+                    if (xhr.readyState == 4) {
+                      if (xhr.status == 200 && xhr.responseText === "success") {
+                        Swal.fire(
+                          "Đã xóa!",
+                          "Món ăn đã được xóa thành công.",
+                          "success"
+                        ).then(() => {
+                          // Xóa phần tử khi xóa vĩnh viễn
+                          document.querySelector(`.list[data-id="${productId}"]`)?.remove();
+                        });
+                      } else {
+                        Swal.fire(
+                          "Lỗi!",
+                          "Không thể xóa món ăn: " + xhr.responseText,
+                          "error"
+                        );
+                      }
                     }
-                });
-            } else {
-                Swal.fire(
-                    'Lỗi!',
-                    'Không thể kiểm tra trạng thái món ăn: ' + response,
-                    'error'
-                );
-            }
-        }
-    };
+                  };
 
-    xhrCheck.send("id=" + productId);
-}
-</script>
+                  xhr.send("id=" + productId);
+                }
+              });
+            } else {
+              Swal.fire("Lỗi!", "Không thể kiểm tra trạng thái món ăn: " + response, "error");
+            }
+          }
+        };
+
+        xhrCheck.send("id=" + productId);
+      }
+    </script>
   </body>
 </html>

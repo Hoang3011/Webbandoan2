@@ -3,7 +3,7 @@ session_start();
 
 // Database connection
 try {
-    $pdo = new PDO("mysql:host=127.0.0.1;dbname=webbandoan222;charset=utf8", "root", "");
+    $pdo = new PDO("mysql:host=127.0.0.1;dbname=webbandoan2;charset=utf8", "root", "");
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
     die("Connection failed: " . $e->getMessage());
@@ -68,7 +68,7 @@ $customers = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Calculate total customers and revenue (multiply by 1000 to append three zeros)
 $total_customers = count($customers);
-$total_revenue = array_sum(array_column($customers, 'total')) * 1000;
+$total_revenue = array_sum(array_column($customers, 'total'));
 
 // Prepare and execute paginated query
 $stmt_paginated = $pdo->prepare($sql_paginated);
@@ -188,7 +188,7 @@ $page = max(1, min($page, $total_pages));
                             <td><?php echo $offset + $index + 1; ?></td>
                             <td><?php echo htmlspecialchars($customer['customerName']); ?></td>
                             <td><?php echo $customer['orderCount']; ?></td>
-                            <td><?php echo number_format($customer['total'] * 1000, 0, ',', '.'); ?> ₫</td>
+                            <td><?php echo number_format($customer['total'] * 1, 0, ',', '.'); ?> ₫</td>
                             <td>
                                 <a href="adminthongkechitiet.php?customerId=<?php echo $customer['customerId']; ?>" class="btn-detail">
                                     <i class="fa-regular fa-eye"></i> Chi tiết

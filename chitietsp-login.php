@@ -77,7 +77,7 @@
                     >
                   </div>
                   <form action="" method="post">
-                  <div class="inner-gia"><?php echo $row['Price'] ?>.000 ₫</div>
+                  <div class="inner-gia"><?= number_format((int)$row['Price'], 0, ',', '.'); ?> ₫</div>
                   <div class="inner-desc">
                     <?php echo $row['Describtion'] ?>
                   </div>
@@ -243,7 +243,7 @@ if ($result->num_rows > 0) {
         echo "</a>";
         echo "<div class='inner-mota'>";
         echo "<div class='inner-ten'>" . $row["Name"] . "</div>";
-        echo "<div class='inner-gia'>" . number_format($row["Price"]) . ".000₫</div>";
+        echo "<div class='inner-gia'>" . number_format($row["Price"], 0, ',', '.') . " ₫</div>";
         echo "</div>";
         echo "</div>";
     }
@@ -300,7 +300,7 @@ if ($result->num_rows > 0) {
               </a>
               <div class="inner-info">
                 <div class="inner-ten">'.$row['Name'].'</div>
-                <div class="inner-gia">'.number_format($row['Price'], 0, ',', '.').'.000₫</div>
+                <div class="inner-gia">'.number_format($row['Price'], 0, ',', '.').'₫</div>
                 <a href="chitietsp-login.php?id='.$row['ID'].'" class="inner-muahang">
                   <i class="fa-solid fa-cart-plus"></i> ĐẶT MÓN
                 </a>

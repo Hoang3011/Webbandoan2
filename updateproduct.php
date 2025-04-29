@@ -1,6 +1,7 @@
 <?php
 include "connect.php"; // Kết nối database
 
+// Debug: Print form data
 echo "<pre>";
 print_r($_FILES);
 print_r($_POST);
@@ -10,15 +11,14 @@ echo "</pre>";
 if (isset($_POST['id']) && isset($_POST['Name']) && isset($_POST['Price']) && isset($_POST['Describtion']) && isset($_POST['Type']) && isset($_POST['Visible'])) {
     $id = intval($_POST['id']);
     $name = mysqli_real_escape_string($conn, $_POST['Name']);
-    // Lọc dấu chấm và chia cho 1000
-    $price = intval(str_replace('.', '', $_POST['Price'])) / 1000;
-    $price = mysqli_real_escape_string($conn, $price);
+    // Lọc dấu chấm và giữ nguyên giá trị số
+    $price = (double)str_replace('.', '', $_POST['Price']); // Chỉ bỏ dấu chấm, không chia
     $desc = mysqli_real_escape_string($conn, $_POST['Describtion']);
     $type = mysqli_real_escape_string($conn, $_POST['Type']);
     $visible = intval($_POST['Visible']); // Lấy giá trị Visible (0 hoặc 1)
 
     // Kiểm tra xem có hình ảnh mới không
-    if (isset($_FILES['Images']) && $_FILES['Images']['error'] == 0) { // Đổi 'Image' thành 'Images'
+    if (isset($_FILES['Images']) && $_FILES['Images']['error'] == 0) {
         $image = $_FILES['Images'];
         $image_name = time() . "_" . basename($image['name']);
         $target_dir = "assets/img/products/";

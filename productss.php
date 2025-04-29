@@ -75,7 +75,7 @@
                   <td><a class="active" href="chitiet.php?madh=' . $row['madh'] . '">DH' . $row['madh'] . '</a></td>
                   <td>' . date("d-m-Y", strtotime($row['ngaytao'])) . '</td>
                   <td>' . htmlspecialchars($row['diachi']) . '</td>
-                  <td>' . number_format($row['tongtien'], 0, ',', '.') . '.000₫</td>
+                  <td>' . number_format($row['tongtien'], 0, ',', '.') . '₫</td>
                   <td>' . htmlspecialchars($row['phuongthuc']) . '</td>
                   <td>' . htmlspecialchars($row['trangthai']) . '</td>
                 </tr>';

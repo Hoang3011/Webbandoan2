@@ -5,10 +5,10 @@ include "connect.php"; // Kết nối database
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['Name']) && isset($_POST['Price']) && isset($_POST['Describtion']) && isset($_POST['Type'])) {
     $name = mysqli_real_escape_string($conn, $_POST['Name']);
     
-    // Xử lý giá: bỏ dấu chấm, bỏ 3 số 0 cuối, ép kiểu về số
+    // Xử lý giá: bỏ dấu chấm, ép kiểu về số
     $price_input = $_POST['Price'];
     $price_cleaned = str_replace('.', '', $price_input); // Bỏ dấu chấm
-    $price = (double)($price_cleaned / 1000); // Bỏ 3 số 0 cuối và ép kiểu về số
+    $price = (int)$price_cleaned; // Ép kiểu về số nguyên
     
     $desc = mysqli_real_escape_string($conn, $_POST['Describtion']);
     $type = mysqli_real_escape_string($conn, $_POST['Type']);
@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['Name']) && isset($_POS
 
     // Thêm dữ liệu vào database với Prepared Statements
     $stmt = $conn->prepare("INSERT INTO sanpham (Name, Price, Describtion, Type, Image) VALUES (?, ?, ?, ?, ?)");
-    $stmt->bind_param("sdsss", $name, $price, $desc, $type, $image_path);
+    $stmt->bind_param("sisss", $name, $price, $desc, $type, $image_path);
     if ($stmt->execute()) {
         header("Location: adminproduct.php"); // Chuyển hướng về trang quản lý sản phẩm
         exit();

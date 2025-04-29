@@ -144,7 +144,7 @@
                                             </div>
                                             <div>
                                                 <p class="text-sm text-uppercase mb-1"><?= $row['Name'] ?></p>
-                                                <span class="text-sm"><?= number_format($row['dongia']) ?>.000đ</span>
+                                                <span class="text-sm"><?= number_format($row['dongia'], 0, ',', '.') ?>đ</span>
                                             </div>
                                         </div>
                                     </td>
@@ -156,7 +156,7 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <div class="price"><?= number_format($row['tongtien']) ?>.000đ</div>
+                                        <div class="price"><?= number_format($row['tongtien']) ?>đ</div>
                                     </td>
                                     <td>
                                         <button type="button" class="remove p-0">
@@ -181,7 +181,7 @@
                         <span>Mã giảm giá</span>
                         <p class="mt-2 mb-4 text-sm text-muted">* Giảm giá sẽ được tính và áp dụng khi thanh toán</p>
                         <input class="form-control h-10 mb-4" placeholder="Coupon code" type="text">
-                        <p class="font-weight-bold">Total: <?= number_format($tong) ?>.000đ</p>
+                        <p class="font-weight-bold">Total: <?= number_format($tong) ?>đ</p>
                         <form action="<?php echo isset($_SESSION['makh']) ? 'thanhtoan.php?makh=' . urlencode($_SESSION['makh']) : 'giohang.php'; ?>" method="post">
                             <button type="submit" class="btn btn-block mt-4 rounded-pill">Thanh toán</button>
                         </form>

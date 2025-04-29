@@ -3,7 +3,7 @@ session_start();
 
 // Database connection
 try {
-    $pdo = new PDO("mysql:host=127.0.0.1;dbname=webbandoan222;charset=utf8", "root", "");
+    $pdo = new PDO("mysql:host=127.0.0.1;dbname=webbandoan2;charset=utf8", "root", "");
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
     die("Connection failed: " . $e->getMessage());
@@ -283,7 +283,7 @@ $paginated_orders = $stmt_paginated->fetchAll(PDO::FETCH_ASSOC);
                                 <tr>
                                     <td><?php echo htmlspecialchars($order['orderId']); ?></td>
                                     <td><?php echo htmlspecialchars($order['orderDate']); ?></td>
-                                    <td><?php echo number_format($order['total'] * 1000, 0, ',', '.'); ?> ₫</td>
+                                    <td><?php echo number_format($order['total'] * 1, 0, ',', '.'); ?> ₫</td>
                                     <td class="control">
                                         <a href="adminthongkehoadon.php?orderId=<?php echo $order['orderId']; ?>" class="btn-detail">
                                             <i class="fa-regular fa-eye"></i> Chi tiết

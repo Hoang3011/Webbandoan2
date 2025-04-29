@@ -30,7 +30,6 @@
   <body>
     <!-- Header --> 
     <?php
-    session_start();
     include "includes/header.php";
     ?>
     <!-- Close Header -->

@@ -200,7 +200,7 @@
                                                     <div class="inner-sl">SL: <?php echo intval($item['soluong']); ?></div>
                                                 </div>
                                             </div>
-                                            <div class="inner-gia"><?php echo $item['giabanle']; ?>.000 ₫</div>
+                                            <div class="inner-gia"><?= number_format($item['giabanle'], 0, ',', '.') ?>₫</div>
                                         </div>
                                     <?php endforeach; ?>
                                 <?php else: ?>
@@ -242,16 +242,16 @@
                                     <?php if ($order_info): ?>
                                         <div class="inner-tien">
                                             <div class="inner-th">Tiền hàng <span><?php echo $total_items; ?> món</span></div>
-                                            <div class="inner-st"><?php echo $order_info['tongtien_dh'] ; ?>.000 ₫</div>
-                                        </div>
+                                            <div class="inner-st"><?= number_format($order_info['tongtien_dh'], 0, ',', '.') ?>₫</div>
+                                            </div>
                                         <div class="inner-vanchuyen">
                                             <span class="inner-vc1">Vận chuyển</span>
-                                            <span class="inner-vc2"><?php echo $phi_van_chuyen ; ?>.000 ₫</span>
+                                            <span class="inner-vc2"><?php echo $phi_van_chuyen ; ?>₫</span>
                                         </div>
                                         <div class="inner-tonggia">
                                             <div class="inner-giaca">
                                                 <div class="inner-chu">Thành tiền</div>
-                                                <div class="inner-so"><?php echo $order_info['tongtien_dh'] + $phi_van_chuyen ; ?>.000 ₫</div>
+                                                <div class="inner-so"><?= number_format($order_info['tongtien_dh'] + $phi_van_chuyen, 0, ',', '.') ?>₫</div>
                                             </div>
                                             <div class="inner-select">
                                           <label for="select">Trạng thái</label>

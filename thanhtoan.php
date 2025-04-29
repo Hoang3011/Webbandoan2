@@ -135,7 +135,7 @@
                                 while ($row = $result->fetch_assoc()) {
                                     $ten = htmlspecialchars($row['Name']);
                                     $soluong = $row['soluong'];
-                                    $gia = number_format($row['Price'], 0, ',', '.') . ".000₫";
+                                    $gia = number_format($row['Price'], 0, ',', '.'). "đ";
                                     $hinhanh = htmlspecialchars($row['Image']);
                                     echo '
                                     <div class="inner-gth">
@@ -233,7 +233,7 @@
                             if ($row1 = $result1->fetch_assoc()) {
                                 $tong_mon = $row1['tong_mon'] ?? 0;
                                 $tien_so = $row1['tong_tien'] ?? 0;
-                                $tong_tien = number_format($tien_so, 0, ',', '.') . ".000₫";
+                                $tong_tien = number_format($tien_so, 0, ',', '.')."đ";
                                 echo '
                                 <div class="inner-item">
                                     <div class="inner-tien">
@@ -243,7 +243,7 @@
                                     </div>
                                       <div class="inner-tien">
                                       <div class="inner-pvc">Phí vận chuyển</div>
-                                      <div class="inner-st">0.000 ₫</div>
+                                      <div class="inner-st">0₫</div>
                                     </div>
                                     <div class="inner-tientong">
                                         <div class="inner-tong">Tổng tiền</div>

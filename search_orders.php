@@ -37,7 +37,7 @@ if (mysqli_num_rows($result) > 0) {
     while ($row = mysqli_fetch_assoc($result)) {
         $madh = "DH" . $row['madh'];
         $ngaydat = date('d/m/Y', strtotime($row['ngaytao']));
-        $tongtien = number_format($row['tongtien']) . ".000 ₫";
+        $tongtien = number_format((int)$row['tongtien'], 0, ',', '.') . " ₫";
         $status_class = '';
         switch ($row['trangthai']) {
             case 'Chưa xác nhận':

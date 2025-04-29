@@ -77,7 +77,7 @@
                       ><i class="fa-solid fa-check"></i>Còn món</span
                     >
                   </div>
-                  <div class="inner-gia"><?php echo $row['Price'] ?>.000 ₫</div>
+                  <div class="inner-gia"><?= number_format($row['Price'], 0, ',', '.'); ?>₫</div>
                   <div class="inner-desc">
                     <?php echo $row['Describtion'] ?>
                   </div>
@@ -92,7 +92,7 @@
                       type="text"
                       value="1"
                       class="inner-so"
-                      name="soluong";
+                      name="soluong"
                     />
                     <span id="tang" onclick="tangsoluong()" class="inner-cong">+</span>
                   </div>
@@ -155,7 +155,6 @@ if ($conn->connect_error) {
 // Truy vấn lấy 4 món ăn nổi bật ngẫu nhiên
 $sql = "SELECT ID, Name, Image, Price FROM sanpham ORDER BY RAND() LIMIT 4";
 $result = $conn->query($sql);
-$result = $conn->query($sql);
 
 if (!$result) {
     die("Lỗi truy vấn SQL: " . $conn->error);
@@ -173,7 +172,7 @@ if ($result->num_rows > 0) {
         echo "</a>";
         echo "<div class='inner-mota'>";
         echo "<div class='inner-ten'>" . $row["Name"] . "</div>";
-        echo "<div class='inner-gia'>" . number_format($row["Price"]) . ".000₫</div>";
+        echo "<div class='inner-gia'>" . number_format($row["Price"], 0, ',', '.') . " ₫</div>";
         echo "</div>";
         echo "</div>";
     }
@@ -232,7 +231,7 @@ if ($result->num_rows > 0) {
               </a>
               <div class="inner-info">
                 <div class="inner-ten">'.$row['Name'].'</div>
-                <div class="inner-gia">'.number_format($row['Price'], 0, ',', '.').'.000₫</div>
+                <div class="inner-gia">'.number_format($row['Price'], 0, ',', '.').' ₫</div>
                 <a href="chitietsp.php?id='.$row['ID'].'" class="inner-muahang">
                   <i class="fa-solid fa-cart-plus"></i> ĐẶT MÓN
                 </a>
@@ -246,11 +245,6 @@ if ($result->num_rows > 0) {
 
 $conn->close();
 ?>
-
-
-
-
-
 
         </div>
       </div>
@@ -271,7 +265,6 @@ function giamsoluong() {
         input.value = parseInt(input.value) - 1;
     }
 }
-
 </script>
 
 </html>

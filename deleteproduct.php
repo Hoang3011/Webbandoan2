@@ -26,13 +26,14 @@ if (isset($_POST['id'])) {
                 echo "error: " . mysqli_error($conn);
             }
         } else {
-            // Xóa sản phẩm
-            $delete_sql = "DELETE FROM sanpham WHERE ID = '$id'";
-            if (mysqli_query($conn, $delete_sql)) {
+            // Ẩn sản phẩm (chỉ cập nhật Visible thành -1)
+            $update_sql = "UPDATE sanpham SET Visible = -1 WHERE ID = '$id'";
+            if (mysqli_query($conn, $update_sql)) {
                 echo "success";
             } else {
                 echo "error: " . mysqli_error($conn);
             }
+
         }
     } else {
         echo "error: Không tìm thấy sản phẩm";

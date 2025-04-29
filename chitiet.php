@@ -132,22 +132,22 @@ if (isset($_SESSION['makh']) && isset($_GET['madh'])) {
           <div class="inner-sl">x<?= $sp['soluong'] ?></div>
         </div>
       </div>
-      <div class="inner-gia"><?= number_format($sp['thanhtien'], 0, ',', '.') ?>.000₫</div>
+      <div class="inner-gia"><?= number_format($sp['thanhtien'], 0, ',', '.') ?>₫</div>
     </div>
     <?php endforeach; ?>
 
     <div class="inner-tonggia">
       <div class="inner-tien">
         <div class="inner-th">Tiền hàng <span><?= $soLuongMon ?> món</span></div>
-        <div class="inner-st"><?= number_format($tienHang, 0, ',', '.') ?>.000₫</div>
+        <div class="inner-st"><?= number_format($tienHang, 0, ',', '.') ?>₫</div>
       </div>
       <div class="inner-vanchuyen">
         <span class="inner-vc1">Vận chuyển</span>
-        <span class="inner-vc2"><?= number_format($vanChuyen, 0, ',', '.') ?>.000₫</span>
+        <span class="inner-vc2"><?= number_format($vanChuyen, 0, ',', '.') ?>₫</span>
       </div>
       <div class="inner-total">
         <span class="inner-tong1">Tổng tiền:</span>
-        <span class="inner-tong2"><?= number_format($tongTien, 0, ',', '.') ?>.000₫</span>
+        <span class="inner-tong2"><?= number_format($tongTien, 0, ',', '.') ?>₫</span>
       </div>
     </div>
   </div>
